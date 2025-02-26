@@ -12,6 +12,8 @@ export async function POST(req: Request) {
 
     return Response.json({ access_token }, { status: 200 });
   } catch (error) {
+    console.log(error);
+    
     if (error instanceof ZodError) {
       const issues = error.issues;
       const issue = issues[0];
