@@ -1,7 +1,8 @@
-'use client'
+"use client";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Swal from "sweetalert2";
+
 
 export default function Register() {
   const [fullName, setFullName] = useState("");
@@ -9,8 +10,8 @@ export default function Register() {
   const [password, setPassword] = useState("");
   const [birthDate, setBirthDate] = useState("");
   const router = useRouter();
-  console.log(fullName,email,password,birthDate);
-  
+ 
+
   async function handleRegister(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
@@ -25,9 +26,7 @@ export default function Register() {
           body: JSON.stringify({ fullName, email, password, birthDate }),
         }
       );
-      console.log(process.env.NEXT_PUBLIC_BASE_URL,"OOOOO");
       
-      console.log("Response Status:", response.status);
 
       // Debug response sebelum parsing
       const responseText = await response.text();
@@ -45,14 +44,8 @@ export default function Register() {
         return; // ❌ Hindari redirect jika ada error
       }
 
-      Swal.fire({
-        icon: "success",
-        title: "Success",
-        text: "Registration successful!",
-      });
 
-      router.push('/login'); // ✅ Pindah hanya jika sukses
-
+      router.push("/login"); // ✅ Pindah hanya jika sukses
     } catch (error) {
       console.error("Error during registration:", error);
       Swal.fire({

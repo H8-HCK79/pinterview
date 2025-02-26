@@ -4,15 +4,18 @@
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import Swal from "sweetalert2";
+import { ZodError } from "zod";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error,setError] =useState('')
   const router = useRouter();
   async function handleCredentialResponse(response: any) {}
 
   async function handleLogin(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+   try {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BASE_URL}/api/login`,
       {
@@ -26,20 +29,23 @@ export default function Login() {
 
     const data = await response.json();
     if (!response.ok) {
-      Swal.fire({
-        icon: "error",
-        title: "Oops",
-        text: data.message,
-      });
+      throw response
     }
-
-    // const cookieStore = await cookies();
-    // cookieStore.set("access_token", data.access_token);
     router.push("/");
+   } catch (error:unknown) {
+    if(error instanceof ZodError) {
+     setError(error.issues[0].message) 
+    }
+   }
   }
   return (
     <>
       <script src="https://accounts.google.com/gsi/client"></script>
+
+    <div>
+      
+    </div>
+
       <div>
         <form onSubmit={handleLogin}>
           <input
