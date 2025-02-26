@@ -5,15 +5,16 @@ import { OAuth2Client } from "google-auth-library";
 
 import { comparePassword, hashPassword } from "@/helpers/bcrypt";
 import { signToken } from "@/helpers/jwt";
-const loginSchema = z.object({
+import { ObjectId } from "mongodb";
+export const loginSchema = z.object({
   email: z.string().email(),
   password: z.string().min(5),
 });
-const UserSchema = z.object({
-  fullName: z.string(),
-  email: z.string(),
-  password: z.string().min(5),
-  birthDate: z.string(),
+export const UserSchema = z.object({
+  fullName: z.string().nonempty({message:'Full name is required'}),
+  email: z.string().nonempty({message:' Email is required'}),
+  password: z.string().min(5).nonempty({message:'Password is required more than 5 characters'}),
+  birthDate: z.string().nonempty({message:'Birth date is required'}),
 });
 export default class UserModel extends Mongoloquent {
   static collection = "users";
@@ -100,4 +101,10 @@ export default class UserModel extends Mongoloquent {
 
     return { user: user.data, accessToken };
   }
+
+  static async UserById(id:string) {
+    const user = await UserModel.find(id)
+
+    return user.data
+}
 }
