@@ -3,11 +3,12 @@ import { ZodError } from "zod";
 
 export async function POST(req: Request) {
   try {
-    const body = await req.json()
+    const { searchParams } = new URL(req.url);
+    const token = searchParams.get("token") as string;
 
-    const user = await UserModel.Register(body)
+    const result = await UserModel.GoogleLogin(token);
 
-    return Response.json({user}, {status:201})
+    return Response.json({ result }, { status: 200 });
   } catch (error) {
     if (error instanceof ZodError) {
       const issues = error.issues;

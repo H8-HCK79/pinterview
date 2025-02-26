@@ -11,6 +11,7 @@
   "dependencies": {
     "@types/jsonwebtoken": "^9.0.9",
     "bcryptjs": "^3.0.2",
+    "google-auth-library": "^9.15.1",
     "jose": "^6.0.6",
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.13.1",
