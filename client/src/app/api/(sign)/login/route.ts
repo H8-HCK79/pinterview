@@ -1,6 +1,8 @@
-import UserModel from "@/interfaces/IUser";
+
+import UserModel from "@/db/models/users";
 import { cookies } from "next/headers";
 import { ZodError } from "zod";
+
 
 export async function POST(req: Request) {
   try {

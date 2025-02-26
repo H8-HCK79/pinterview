@@ -1,4 +1,5 @@
-import UserModel from "@/interfaces/IUser";
+
+import UserModel from "@/db/models/users";
 import { ZodError } from "zod";
 
 export async function POST(req: Request) {
