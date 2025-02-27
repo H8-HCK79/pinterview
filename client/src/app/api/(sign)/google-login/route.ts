@@ -1,16 +1,19 @@
-
 import UserModel from "@/db/models/users";
+import { cookies } from "next/headers";
 import { ZodError } from "zod";
 
 export async function POST(req: Request) {
   try {
-    const { searchParams } = new URL(req.url);
-    const token = searchParams.get("token") as string;
+    const body = await req.json();
 
-    const result = await UserModel.GoogleLogin(token);
+    const access_token = await UserModel.GoogleLogin(body.token);
 
-    return Response.json({ result }, { status: 200 });
+    const cookieStore = await cookies();
+    cookieStore.set("token", access_token.accessToken);
+    return Response.json({ access_token }, { status: 200 });
   } catch (error) {
+    console.log(error, "SSSS");
+
     if (error instanceof ZodError) {
       const issues = error.issues;
       const issue = issues[0];

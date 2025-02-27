@@ -1,9 +1,7 @@
 "use client";
-import { UserSchema } from "@/db/models/users";
+
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import Swal from "sweetalert2";
-import { ZodError } from "zod";
 
 export default function Register() {
   const [fullName, setFullName] = useState("");
