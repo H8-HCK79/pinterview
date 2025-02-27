@@ -1,16 +1,60 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
-import Swal from "sweetalert2";
-import { ZodError } from "zod";
+import React, { useEffect, useState } from "react";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const router = useRouter();
-  async function handleCredentialResponse(response: any) {}
+
+  useEffect(() => {
+    if (typeof window !== undefined && window.google) {
+      window.google.accounts.id.initialize({
+        client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
+        callback: handleCredentialResponse,
+      });
+      window.google.accounts.id.renderButton(
+        document.getElementById("googleSignInButton"),
+        {
+          theme: "outline",
+          size: "large",
+        }
+      );
+    }
+  }, []);
+  async function handleCredentialResponse(
+    response: any,
+    e: React.FormEvent<HTMLFormElement>
+  ) {
+    console.log(response.credential,"INI CREDENTIAL");
+    
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/google-login`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ token: response.credential }),
+        }
+      );
+
+      
+      if(!res.ok) {
+        const data= await res.json()
+        throw new Error(data.message)
+      }
+
+      router.push('/')
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setError(error.message);
+      }
+    }
+  }
 
   async function handleLogin(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -39,7 +83,7 @@ export default function Login() {
   }
   return (
     <>
-      <script src="https://accounts.google.com/gsi/client"></script>
+      
       <div>
         {error ? (
           <div role="alert" className="alert alert-error">
@@ -79,7 +123,7 @@ export default function Login() {
           <input type="submit" value="Submit" className="btn" />
         </form>
       </div>
-      ;
+      <div id="googleSignInButton"></div>; ;
     </>
   );
 }

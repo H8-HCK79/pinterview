@@ -5,7 +5,7 @@ import { OAuth2Client } from "google-auth-library";
 
 import { comparePassword, hashPassword } from "@/helpers/bcrypt";
 import { signToken } from "@/helpers/jwt";
-import { ObjectId } from "mongodb";
+
 export const loginSchema = z.object({
   email: z.string().email(),
   password: z.string().min(5),
@@ -72,41 +72,50 @@ export default class UserModel extends Mongoloquent {
       throw error;
     }
   }
-  static async GoogleLogin(googlToken: string) {
-    const googleClientId = process.env.GOOGLE_CLIENT_ID as string;
-    const client = new OAuth2Client(googleClientId);
-
-    const ticket = await client.verifyIdToken({
-      idToken: googlToken,
-      audience: googleClientId,
-    });
-
-    const payload = ticket.getPayload();
-    if (!payload) throw new Error("Invalid Google token");
-
-    const { sub, name, email, picture } = payload;
-
-    let user = (await UserModel.where("email", email).first()) as {
-      data: IUser;
-    };
-
-    if (!user) {
+  static async GoogleLogin(googleToken: string) {
+    try {
+      if (!googleToken) throw new Error("Google token is missing");
+      const googleClientId = process.env.GOOGLE_CLIENT_ID as string;
+      const client = new OAuth2Client(googleClientId);
+  
+      const ticket = await client.verifyIdToken({
+        idToken: googleToken,
+        audience: googleClientId,
+      });
+  
+      const payload = ticket.getPayload();
+      if (!payload) throw new Error("Invalid Google token");
+  
+      const { sub, name, email, picture } = payload;
+  
+      let user = (await UserModel.where("email", email).first()) as {
+        data: IUser;
+      };
+  
+      if (user.data) {
+        const accessToken = signToken({ _id: user.data._id });
+        return { user: user.data, accessToken };
+      }
+  
       // Jika user belum ada, buat user baru dengan akun Google
-      const newUser = await UserModel.insert({
+      let newUser = (await UserModel.insert({
         fullName: name,
         email,
         password: "googlelogin", // Kosong karena login dengan Google
-        birthDate: "", // Bisa disesuaikan jika Google menyediakan
+        birthDate: "",
         quota: 10,
         createdAt: new Date(),
         updatedAt: new Date(),
-      });
-      await UserModel.where("email", email).first();
+      })) as IUser;
+  
+      const accessToken = signToken({ _id: newUser._id });
+  
+      return { user: user.data, accessToken };
+    } catch (error) {
+      throw error
     }
 
-    const accessToken = signToken({ _id: user.data._id });
-
-    return { user: user.data, accessToken };
+  
   }
 
   static async UserById(id: string) {
