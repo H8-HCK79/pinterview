@@ -11,10 +11,16 @@ export const loginSchema = z.object({
   password: z.string().min(5),
 });
 export const UserSchema = z.object({
-  fullName: z.string().nonempty({message:'Full name is required'}),
-  email: z.string().nonempty({message:' Email is required'}),
-  password: z.string().min(5).nonempty({message:'Password is required more than 5 characters'}),
-  birthDate: z.string().nonempty({message:'Birth date is required'}),
+  fullName: z.string().nonempty({ message: "Full name is required" }),
+  email: z
+    .string()
+    .email({ message: "Invalid email format" })
+    .nonempty({ message: " Email is required" }),
+  password: z
+    .string()
+    .nonempty({ message: "Password is required " })
+    .min(5, { message: "Password characters must be at least 5" }),
+  birthDate: z.string().nonempty({ message: "Birth date is required" }),
 });
 export default class UserModel extends Mongoloquent {
   static collection = "users";
@@ -95,6 +101,7 @@ export default class UserModel extends Mongoloquent {
         createdAt: new Date(),
         updatedAt: new Date(),
       });
+      await UserModel.where("email", email).first();
     }
 
     const accessToken = signToken({ _id: user.data._id });
@@ -102,9 +109,9 @@ export default class UserModel extends Mongoloquent {
     return { user: user.data, accessToken };
   }
 
-  static async UserById(id:string) {
-    const user = await UserModel.find(id)
+  static async UserById(id: string) {
+    const user = await UserModel.find(id);
 
-    return user.data
-}
+    return user.data;
+  }
 }
