@@ -9,7 +9,6 @@ const jobSchema = z.object({
   rawDescription: z.string({ message: "Raw description is required" }),
 });
 
-
 export default class JobModel extends Mongoloquent {
   static collection = "jobs";
 
@@ -19,22 +18,27 @@ export default class JobModel extends Mongoloquent {
     return jobs;
   }
 
-  static async generateJob(payload:IJobResponseAI,userId:string) {
+  static async generateJob(payload: IJobResponseAI | string, userId: string) {
     try {
-      const {company,position,description,skills,requirements} = payload.response.job
-      const newJob = {
-      userId: new ObjectId(userId),
-      company,
-      position,
-      description,
-      skills,
-      requirements,
-      status:'Ready to apply',
-      readiness: 0,
-      createdAt:new Date(),
-      updatedAt: new Date()
+      if (typeof payload === "string") {
+        throw new Error(payload);
       }
-      const response= await JobModel.insert(newJob)
+
+      const { company, position, description, skills, requirements } =
+        payload.job;
+      const newJob = {
+        userId: new ObjectId(userId),
+        company,
+        position,
+        description,
+        skills,
+        requirements,
+        status: "Ready to apply",
+        readiness: 0,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+      const response = await JobModel.insert(newJob);
       return response;
     } catch (error) {
       throw error;
@@ -52,7 +56,9 @@ export default class JobModel extends Mongoloquent {
   }
   static async patchJobStatus(jobId: string, status: string) {
     try {
-      const job = (await JobModel.where("_id", jobId).update({ status })) as IJob;
+      const job = (await JobModel.where("_id", jobId).update({
+        status,
+      })) as IJob;
       return job;
     } catch (error) {
       throw error;
@@ -61,9 +67,9 @@ export default class JobModel extends Mongoloquent {
 
   static async deleteJob(id: string) {
     try {
-       await JobModel.where("_id", id).where("status",'rejected').delete(); 
+      await JobModel.where("_id", id).where("status", "rejected").delete();
 
-      return ` You sucessfully delete a job`
+      return ` You sucessfully delete a job`;
     } catch (error) {
       throw error;
     }

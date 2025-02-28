@@ -1,4 +1,4 @@
-export interface IQuiz {
+export interface IQuestion {
   _id: string;
   testId: string;
   question: string;
@@ -7,4 +7,10 @@ export interface IQuiz {
   feedback: string;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface IInterviewQuestion {
+  type: "concept" | "technical";
+  question: string;
+  expectedAnswer: string;
 }
