@@ -6,3 +6,9 @@ export interface ITest {
   createdAt: string;
   updatedAt: string;
 }
+
+
+export interface ITestInput {
+  category: string;
+  position:string
+}

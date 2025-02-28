@@ -13,11 +13,24 @@ export default class JobModel extends Mongoloquent {
   static collection = "jobs";
 
   static async getAllJob() {
-    const jobs = await JobModel.get();
+    try {
+      const jobs = await JobModel.get();
 
     return jobs;
+    } catch (error) {
+      throw error
+    }
   }
 
+  static async fetchById(jobId:string) {
+    try {
+      const job = (await JobModel.find(jobId)).data
+
+      return job
+    } catch (error) {
+      throw error
+    }
+  }
   static async generateJob(payload: IJobResponseAI | string, userId: string) {
     try {
       if (typeof payload === "string") {

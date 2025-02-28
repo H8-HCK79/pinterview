@@ -1,9 +1,12 @@
+import { ObjectId } from "mongodb";
+
 export interface IQuestion {
-  _id: string;
-  testId: string;
+  _id: ObjectId;
+  testId: ObjectId;
+  type:string;
   question: string;
   answer: string;
-  solution: string;
+  expectedAnswer: string;
   feedback: string;
   createdAt: string;
   updatedAt: string;
