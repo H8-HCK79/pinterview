@@ -6,7 +6,7 @@ import { JOSEError } from "jose/errors";
 export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname
 
-  if(path === 'api/profile' &&path.includes('/api/jobs')) {
+  if(path === 'api/profile' && path.includes('/api/jobs')) {
     const secret = new TextEncoder().encode(process.env.JWT_SECRET) 
 
     const cookieStore = await cookies()

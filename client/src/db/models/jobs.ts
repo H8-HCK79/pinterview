@@ -2,6 +2,7 @@ import { IJob, IJobResponseAI, JobInput } from "@/interfaces/IJob";
 import { ObjectId } from "mongodb";
 import { Mongoloquent } from "mongoloquent";
 import { z } from "zod";
+import TestModel from "./tests";
 
 const jobSchema = z.object({
   company: z.string({ message: "Company name is required" }),
@@ -16,19 +17,26 @@ export default class JobModel extends Mongoloquent {
     try {
       const jobs = await JobModel.get();
 
-    return jobs;
+      return jobs;
     } catch (error) {
-      throw error
+      throw error;
     }
   }
 
-  static async fetchById(jobId:string) {
-    try {
-      const job = (await JobModel.find(jobId)).data
+  static async tests() {
+    return JobModel.hasMany(TestModel, "jobId", "_id");
+  }
 
-      return job
+  static async fetchById(jobId: string) {
+    try {
+      const job = await JobModel.with("tests").find(jobId);
+
+      // your relationship data can accessed in the data property
+      // console.log(job.data);
+
+      return job.data;
     } catch (error) {
-      throw error
+      throw error;
     }
   }
   static async generate(payload: IJobResponseAI | string, userId: string) {
@@ -52,7 +60,7 @@ export default class JobModel extends Mongoloquent {
         updatedAt: new Date(),
       };
       const response = await JobModel.insert(newJob);
-      return response as IJob
+      return response as IJob;
     } catch (error) {
       throw error;
     }

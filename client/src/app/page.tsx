@@ -3,8 +3,6 @@ import React from "react";
 import { BackgroundLines } from "@/components/ui/background-lines";
 import { Button } from "@/components/ui/button";
 
-<!-- import Navbar from "@/components/navbar"; -->
-<!-- import PayButton from "@/components/payButton"; -->
 
 
 export default function Home() {
@@ -25,9 +23,7 @@ export default function Home() {
         </Button>
       </BackgroundLines>
 
-<!--     <div className="">
-      <Navbar/>
-      <PayButton /> -->
+
     </div>
   );
 }

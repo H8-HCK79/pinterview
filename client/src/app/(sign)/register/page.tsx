@@ -54,27 +54,27 @@ export default function Register() {
             placeholder="Full Name"
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
-            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400 text-black"
+            className="w-full p-2 border text-white rounded focus:outline-none focus:ring-2 focus:ring-blue-400 "
           />
           <input
             type="text"
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400 text-black"
+            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400 text-white"
           />
           <input
             type="password"
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400 text-black"
+            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400 text-white"
           />
           <input
             type="date"
             value={birthDate}
             onChange={(e) => setBirthDate(e.target.value)}
-            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400 text-black"
+            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400 text-white"
           />
           <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">
             Submit

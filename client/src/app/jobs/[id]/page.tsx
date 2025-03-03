@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { Checkbox } from "@/components/ui/checkbox";
+// import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import {
   Accordion,
@@ -21,76 +21,46 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import RadarChart from "@/components/radar-chart";
-
-// Sample job data - in a real app this would come from a database or API
-const jobData = {
-  title: "Software Engineer",
-  company: "Traveloka",
-  readiness: 80,
-  prepareList: [
-    { task: "3 hours of Coding a day minimum", completed: false },
-    { task: "Read documentation of MongoDB", completed: false },
-    { task: "Understanding REST API", completed: false },
-    {
-      task: "Build a sample project using React and Node.js",
-      completed: false,
-    },
-    { task: "Practice system design questions", completed: false },
-  ],
-  testsToTake: [
-    {
-      name: "React",
-      description:
-        "Test your knowledge of React components, hooks, and state management.",
-    },
-    {
-      name: "NodeJS",
-      description:
-        "Assess your understanding of server-side JavaScript and Node.js ecosystem.",
-    },
-    {
-      name: "MongoDB",
-      description:
-        "Evaluate your skills in working with NoSQL databases and MongoDB queries.",
-    },
-    {
-      name: "Express",
-      description:
-        "Test your ability to build RESTful APIs using Express.js framework.",
-    },
-  ],
-  requirements: [
-    "Bachelor’s degree in Computer Science, Engineering, or related field (or equivalent practical experience)",
-    "5+ years of professional experience as a software developer",
-    "Proficiency in Django",
-    "Solid understanding of RESTful APIs",
-    "Experience with front-end technologies like JavaScript, HTML5, and CSS3 is a plus",
-    "Familiarity with modern DevOps practices, including Docker and CI/CD pipelines",
-    "Good command in English (Speaking and Written)",
-  ],
-  skills: {
-    React: 0.8,
-    PostgreSQL: 0.6,
-    Insight: 0.7,
-    Express: 0.5,
-    GraphQL: 0.7,
-    NodeJS: 0.9,
-  },
-};
+import { StatusBadge } from "@/components/ui/JobsCard";
+import { useParams } from "next/navigation";
+import { IAggregatedJob } from "@/interfaces/IJob";
+import Link from "next/link";
 
 export default function JobDetailsPage() {
+  const params = useParams<{ id: string }>();
+  const { id } = params;
+  console.log(id, "<== id dari params nih brok");
+  const [job, setJob] = useState<IAggregatedJob>();
   const [selectedSkill, setSelectedSkill] = useState("React");
-  const [prepareList, setPrepareList] = useState(jobData.prepareList);
 
-  const toggleTask = (index: number) => {
-    const updatedList = [...prepareList];
-    updatedList[index].completed = !updatedList[index].completed;
-    setPrepareList(updatedList);
-  };
+  // const [prepareList, setPrepareList] = useState(job.prepareList);
 
-  const completedTasks = prepareList.filter((item) => item.completed).length;
-  const totalTasks = prepareList.length;
-  const progressPercentage = (completedTasks / totalTasks) * 100;
+  // const toggleTask = (index: number) => {
+  //   const updatedList = [...prepareList];
+  //   updatedList[index].completed = !updatedList[index].completed;
+  //   setPrepareList(updatedList);
+  // };
+  // const completedTasks = prepareList.filter((item) => item.completed).length;
+  // const totalTasks = prepareList.length;
+  // const progressPercentage = (completedTasks / totalTasks) * 100;
+  useEffect(() => {
+    async function fetchJob() {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/jobs/${id}`,
+        {
+          method: "GET",
+        }
+      );
+      const data = await res.json();
+      setJob(data.data);
+    }
+    fetchJob();
+  }, []);
+
+  if (!job) {
+    return <div className="text-center py-10">Loading...</div>;
+  }
+  console.log(job, "< jing");
 
   return (
     <div className="container mx-auto py-8 px-4 min-h-screen">
@@ -98,38 +68,45 @@ export default function JobDetailsPage() {
         {/* Left Column */}
         <div className="space-y-8">
           {/* Job Title and Company */}
-          <div>
-            <h1 className="text-3xl font-bold">{jobData.title}</h1>
-            <h2 className="text-xl text-muted-foreground">{jobData.company}</h2>
+          <div className="flex justify-between">
+            <div>
+              <h1 className="text-3xl font-bold">{job.position}</h1>
+              <h2 className="text-xl font-semibold text-[#0077b6]">
+                {job.company}
+              </h2>
+            </div>
+            <StatusBadge status={job.status} />
           </div>
 
           {/* Requirement */}
           <div>
             <h1 className="text-xl font-bold">Requirement</h1>
-            {jobData.requirements.map((el, i) => (
-              <ol className="text-muted-foreground">
-                <li>{el}</li>
-              </ol>
+            {job.requirements?.map((req: string, i: number) => (
+              <li key={i}>{req}</li>
             ))}
           </div>
           {/* Tests to Take */}
           <div>
             <h3 className="text-lg font-medium mb-4">Tests to take:</h3>
             <Accordion type="single" collapsible className="w-full">
-              {jobData.testsToTake.map((test) => (
-                <AccordionItem value={test.name} key={test.name}>
+              {job.tests.map((test, i) => (
+                <AccordionItem value={test.category} key={i}>
                   <AccordionTrigger>
-                    <Badge
-                      variant={
-                        selectedSkill === test.name ? "default" : "secondary"
-                      }
-                      className="px-4 py-2 text-base cursor-pointer"
-                      onClick={() => setSelectedSkill(test.name)}
-                    >
-                      {test.name}
-                    </Badge>
+                    <Link href={`/test/${test._id}`}>
+                      <Badge
+                        variant={
+                          selectedSkill === test.category
+                            ? "default"
+                            : "secondary"
+                        }
+                        className="px-4 py-2 text-base cursor-pointer"
+                        onClick={() => setSelectedSkill(test.category)}
+                      >
+                        {test.category}
+                      </Badge>
+                    </Link>
                   </AccordionTrigger>
-                  <AccordionContent>{test.description}</AccordionContent>
+                  <AccordionContent>{test.summary}</AccordionContent>
                 </AccordionItem>
               ))}
             </Accordion>
@@ -139,7 +116,7 @@ export default function JobDetailsPage() {
         {/* Right Column */}
         <div className="space-y-8">
           {/* To Prepare List */}
-          <div>
+          {/* <div>
             <h3 className="text-lg font-medium mb-2">To prepare list:</h3>
             <ul className="space-y-2">
               {prepareList.map((item, index) => (
@@ -158,22 +135,22 @@ export default function JobDetailsPage() {
                 </li>
               ))}
             </ul>
-          </div>
+          </div> */}
 
           {/* Overall Progress  */}
-          <Card className="p-4">
+          {/* <Card className="p-4">
             <h3 className="text-lg font-medium mb-2">Overall Progress</h3>
             <Progress value={progressPercentage} className="w-full" />
             <p className="text-sm text-muted-foreground mt-2">
               {completedTasks} of {totalTasks} tasks completed
             </p>
-          </Card>
+          </Card> */}
 
           {/* Readiness Chart */}
           <Card className="p-4">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-medium">
-                Readiness: {jobData.readiness}%
+                Readiness: {job.readiness}%
               </h3>
               <Dialog>
                 <DialogTrigger asChild>
@@ -187,13 +164,13 @@ export default function JobDetailsPage() {
                     </DialogDescription>
                   </DialogHeader>
                   <div className="py-4">
-                    {Object.entries(jobData.skills).map(([skill, value]) => (
+                    {Object.entries(job.tests).map(({category, score}) => (
                       <div
-                        key={skill}
+                        key={category}
                         className="flex justify-between items-center mb-2"
                       >
-                        <span>{skill}</span>
-                        <Progress value={value * 100} className="w-1/2" />
+                        <span>{category}</span>
+                        <Progress value={score* 100} className="w-1/2" />
                       </div>
                     ))}
                   </div>
@@ -201,7 +178,7 @@ export default function JobDetailsPage() {
               </Dialog>
             </div>
             <div className="h-64">
-              <RadarChart data={jobData.skills} skillName={selectedSkill} />
+              <RadarChart data={job.tests} skillName={selectedSkill} />
             </div>
           </Card>
         </div>

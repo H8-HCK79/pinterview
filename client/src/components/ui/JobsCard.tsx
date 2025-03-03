@@ -8,7 +8,7 @@ import {
 import { Briefcase, Building2 } from "lucide-react";
 
 type Job = {
-  id: number;
+  _id: string;
   company: string;
   position: string;
   skills: string[];
@@ -65,11 +65,11 @@ export function JobCard({ job }: JobCardProps) {
   );
 }
 
-function StatusBadge({ status }: { status: string }) {
+export function StatusBadge({ status }: { status: string }) {
   const getStatusConfig = (status: string) => {
     switch (status) {
-      case "on-going":
-        return { label: "On-going", variant: "default" };
+      case "ready to applied":
+        return { label: "Ready to Apply", variant: "default" };
       case "applied":
         return { label: "Applied", variant: "secondary" };
       case "interview-scheduled":
