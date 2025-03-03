@@ -11,7 +11,7 @@ const useSpeechRecognition = () => {
     if (typeof window === "undefined") return;
 
     const SpeechRecognitionAPI =
-      window.SpeechRecognition || (window as any).webkitSpeechRecognition;
+      window.SpeechRecognition || (window).webkitSpeechRecognition;
 
     if (!SpeechRecognitionAPI) {
       setHasRecognitionSupport(false);
