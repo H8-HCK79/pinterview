@@ -9,10 +9,9 @@ export type Params = {
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    // const userId = req.headers.get("x-user-id") as string;
+    const userId = req.headers.get("x-user-id") as string;
 
-    const userId = "67c274632aeab3cfca7afcf8";
-    console.log(userId, "<<< userId Initiate");
+    
     const user: IUser = await UserModel.findById(userId);
 
     const { fullName, email } = user;

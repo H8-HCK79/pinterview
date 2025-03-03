@@ -1,5 +1,5 @@
-"use client";
-
+'use client'
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
@@ -24,12 +24,13 @@ export default function Login() {
       );
     }
   }, []);
+
   async function handleCredentialResponse(
     response: any,
     e: React.FormEvent<HTMLFormElement>
   ) {
-    console.log(response.credential,"INI CREDENTIAL");
-    
+    console.log(response.credential, "INI CREDENTIAL");
+
     try {
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_BASE_URL}/api/google-login`,
@@ -42,13 +43,12 @@ export default function Login() {
         }
       );
 
-      
-      if(!res.ok) {
-        const data= await res.json()
-        throw new Error(data.message)
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.message);
       }
 
-      router.push('/')
+      router.push("/");
     } catch (error: unknown) {
       if (error instanceof Error) {
         setError(error.message);
@@ -81,49 +81,46 @@ export default function Login() {
       }
     }
   }
+
   return (
-    <>
-      
-      <div>
-        {error ? (
-          <div role="alert" className="alert alert-error">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6 shrink-0 stroke-current"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-            <span>Error! {error}</span>
+    <div className="flex items-center justify-center min-h-screen bg-blue-200">
+      <div className="bg-blue-900 p-8 rounded-lg shadow-lg w-96 text-white">
+        <h2 className="text-2xl font-bold text-center mb-4">Login</h2>
+        {error && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded mb-4">
+            {error}
           </div>
-        ) : (
-          ""
         )}
-      </div>
-      <div>
-        <form onSubmit={handleLogin}>
+        <form onSubmit={handleLogin} className="space-y-4">
           <input
             type="email"
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400 text-black"
           />
           <input
             type="password"
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400 text-black"
           />
-          <input type="submit" value="Submit" className="btn" />
+          <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">
+            Submit
+          </button>
         </form>
+        <div
+          id="googleSignInButton"
+          className="flex items-center justify-center mt-5 rounded-full"
+        ></div>
+        <p className="text-center mt-4">
+          You never registered an account?
+          <Link href="/register" className="text-blue-300 hover:underline">
+            Register here
+          </Link>
+        </p>
       </div>
-      <div id="googleSignInButton"></div>; ;
-    </>
+    </div>
   );
 }
