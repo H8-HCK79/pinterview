@@ -119,9 +119,9 @@ export default function RadarChart({ data, skillName }: RadarChartProps) {
   return (
     <canvas
       ref={canvasRef}
-      width={400}
-      height={400}
-      className="w-full h-full"
+      width={300}
+      height={280}
+      
     />
   );
 }
