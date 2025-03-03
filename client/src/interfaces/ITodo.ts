@@ -1,9 +1,11 @@
+import { ObjectId } from "mongodb";
+
 export interface ITodo {
-  _id: string;
-  jobId: string;
+  _id: ObjectId;
+  jobId: ObjectId;
   activity: string;
   notes: string;
-  status: string;
+  status: "Todo" | "In Progress" | "Done";
   createdAt: string;
   updatedAt: string;
 }

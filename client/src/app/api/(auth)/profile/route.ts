@@ -4,8 +4,8 @@ import { ZodError } from "zod";
 
 export async function GET(req: NextRequest) {
   try {
-    const id = req.headers.get("x-user-id") as string;
-    const user = await UserModel.UserById(id);
+    const userId = req.headers.get("x-user-id") as string;
+    const user = await UserModel.findById(userId);
 
     return user;
   } catch (error: unknown) {
