@@ -1,17 +1,18 @@
-import UserModel from "@/interfaces/IUser";
+import UserModel from "@/db/models/users";
 import { ZodError } from "zod";
 
 export async function POST(req: Request) {
   try {
-    const body = await req.json()
+    const body = await req.json();
 
-    const user = await UserModel.Register(body)
+    await UserModel.Register(body);
 
-    return Response.json({user}, {status:201})
-  } catch (error) {
+    return Response.json({ message: "Register successful" }, { status: 201 });
+  } catch (error: unknown) {
     if (error instanceof ZodError) {
       const issues = error.issues;
       const issue = issues[0];
+
       return Response.json({ message: issue.message }, { status: 400 });
     } else {
       return Response.json(

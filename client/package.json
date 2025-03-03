@@ -25,11 +25,20 @@
     "google-auth-library": "^9.15.1",
     "jose": "^6.0.6",
     "jsonwebtoken": "^9.0.2",
+
     "lucide-react": "^0.476.0",
+
+    "midtrans-client": "^1.4.2",
+
     "mongodb": "^6.13.1",
     "mongoloquent": "^2.0.0",
+    "nanoid": "^5.1.2",
     "next": "15.1.7",
+
     "qss": "^3.0.0",
+
+    "openai": "^4.86.1",
+
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "sweetalert2": "^11.17.2",

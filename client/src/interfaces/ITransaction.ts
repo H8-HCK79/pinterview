@@ -1,6 +1,9 @@
+import { ObjectId } from "mongodb";
+
 export interface ITransaction {
-  _id: string;
-  userId: string;
+  _id: ObjectId;
+  userId: ObjectId;
+  orderId: string;
   amount: number;
   status: string;
   createdAt: string;
