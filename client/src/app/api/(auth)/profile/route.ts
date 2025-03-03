@@ -7,7 +7,7 @@ export async function GET(req: NextRequest) {
     const userId = req.headers.get("x-user-id") as string;
     const user = await UserModel.findById(userId);
 
-    return user;
+    return Response.json({data:user}, {status:200})
   } catch (error: unknown) {
     if (error instanceof ZodError) {
       return Response.json({ message: "Unauthorized" }, { status: 401 });
