@@ -2,10 +2,10 @@ import JobModel from "@/db/models/jobs";
 import { IJob } from "@/interfaces/IJob";
 import { ZodError } from "zod";
 
-export type DetailJobId = {
+export type Params = {
   params: Promise<{ jobId: string; status?: string ,testId:string}>;
 };
-export async function GET(req: Request, { params }: DetailJobId) {
+export async function GET(req: Request, { params }: Params) {
   try {
     const { jobId } = await params;
     const job = await JobModel.fetchById(jobId);
@@ -28,7 +28,7 @@ export async function GET(req: Request, { params }: DetailJobId) {
     }
   }
 }
-export async function PATCH(req: Request, { params }: DetailJobId) {
+export async function PATCH(req: Request, { params }: Params) {
   try {
     const { jobId } = await params;
     const body: { status: string } = await req.json();
@@ -52,7 +52,7 @@ export async function PATCH(req: Request, { params }: DetailJobId) {
   }
 }
 
-export async function DELETE(req: Request, { params }: DetailJobId) {
+export async function DELETE(req: Request, { params }: Params) {
   try {
     const { jobId } = await params;
     if (!jobId) throw new Error("Job is not found");

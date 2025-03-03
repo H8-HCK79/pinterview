@@ -46,7 +46,7 @@ export default class UserModel extends Mongoloquent {
         email,
         password: hashedPassword,
         birthDate,
-        quota: 10,
+        quota: 3,
         createdAt: new Date(),
         updatedAt: new Date(),
       });
@@ -112,7 +112,7 @@ export default class UserModel extends Mongoloquent {
         email,
         password: "googlelogin", // Kosong karena login dengan Google
         birthDate: "",
-        quota: 10,
+        quota: 3,
         createdAt: new Date(),
         updatedAt: new Date(),
       })) as IUser;
@@ -125,9 +125,9 @@ export default class UserModel extends Mongoloquent {
     }
   }
 
-  static async UserById(id: string) {
+  static async findById(id: string) {
     const user = await UserModel.find(id);
 
-    return user.data;
+    return user.data as IUser;
   }
 }

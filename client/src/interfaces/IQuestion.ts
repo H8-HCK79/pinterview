@@ -3,10 +3,11 @@ import { ObjectId } from "mongodb";
 export interface IQuestion {
   _id: ObjectId;
   testId: ObjectId;
-  type:string;
+  type: string;
   question: string;
-  answer: string;
   expectedAnswer: string;
+  answer: string;
+  correctness: number;
   feedback: string;
   createdAt: string;
   updatedAt: string;

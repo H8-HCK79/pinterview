@@ -1,9 +1,10 @@
 import { type NextRequest } from "next/server";
 import JobModel from "@/db/models/jobs";
 import { ZodError } from "zod";
-import { IJobResponseAI } from "@/interfaces/IJob";
+import { IJob, IJobResponseAI } from "@/interfaces/IJob";
 
-import { generateJobAI } from "@/services/openai/generate-job";
+import { generateJobAI } from "@/services/openai/generateJobAI";
+import TestModel from "@/db/models/tests";
 
 export async function GET(request: NextRequest) {
   try {
@@ -16,7 +17,7 @@ export async function GET(request: NextRequest) {
     }
 
     const jobs = await JobModel.getAllJob();
-    return Response.json({ jobs }, { status: 200 });
+    return Response.json({ data: jobs }, { status: 200 });
   } catch (error: unknown) {
     if (error instanceof ZodError) {
       const issues = error.issues;
@@ -32,16 +33,12 @@ export async function GET(request: NextRequest) {
   }
 }
 
-
 export async function POST(req: NextRequest) {
   try {
     const userId = req.headers.get("x-user-id") as string;
     const { company, position, rawDescription } = await req.json();
-    const responseOpenAI: IJobResponseAI | string = await generateJobAI(
-      company,
-      position,
-      rawDescription
-    );
+    const responseOpenAI: IJobResponseAI | { error: string } =
+      await generateJobAI(company, position, rawDescription);
 
     if (!responseOpenAI) {
       return Response.json(
@@ -49,9 +46,21 @@ export async function POST(req: NextRequest) {
         { status: 500 }
       );
     }
-    const job = await JobModel.generateJob(responseOpenAI, userId);
+    
+    if ("error" in responseOpenAI) {
+      return Response.json(
+        { error: responseOpenAI.error }, // ✅ Now safely access error
+        { status: 400 }
+      );
+    }
 
-    return Response.json({ data: job }, { status: 200 });
+    const job: IJob = await JobModel.generate(responseOpenAI, userId);
+
+    job.skills.forEach(async (skill) => {
+      await TestModel.generate({ category: skill, position }, job._id);
+    });
+
+    return Response.json({ response: job }, { status: 201 });
   } catch (err) {
     console.error("Error handling request:", err);
     return Response.json({ error: "Internal Server Error" }, { status: 500 });

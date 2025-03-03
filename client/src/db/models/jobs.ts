@@ -31,7 +31,7 @@ export default class JobModel extends Mongoloquent {
       throw error
     }
   }
-  static async generateJob(payload: IJobResponseAI | string, userId: string) {
+  static async generate(payload: IJobResponseAI | string, userId: string) {
     try {
       if (typeof payload === "string") {
         throw new Error(payload);
@@ -52,7 +52,7 @@ export default class JobModel extends Mongoloquent {
         updatedAt: new Date(),
       };
       const response = await JobModel.insert(newJob);
-      return response;
+      return response as IJob
     } catch (error) {
       throw error;
     }
