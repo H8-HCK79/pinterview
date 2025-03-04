@@ -9,3 +9,10 @@ export interface ITransaction {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface IPackage {
+  id: number;
+  quota: number;
+  price: number;
+  description: string;
+}
