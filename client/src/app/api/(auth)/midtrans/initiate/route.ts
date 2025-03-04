@@ -25,6 +25,7 @@ export async function POST(req: Request) {
       orderId: response?.orderId,
       userId: new ObjectId(userId),
       amount: body.package.price,
+      quota: body.package.quota,
       status: "Pending",
       createdAt: new Date(),
       updatedAt: new Date(),
