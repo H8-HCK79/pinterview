@@ -23,12 +23,18 @@ import RadarChart from "@/components/radar-chart";
 import { useParams } from "next/navigation";
 import { IAggregatedJob } from "@/interfaces/IJob";
 import Link from "next/link";
+import { StatusBadge } from "@/components/ui/JobsCard";
 
 export default function JobDetailsPage() {
   const params = useParams<{ id: string }>();
   const { id } = params;
   const [job, setJob] = useState<IAggregatedJob | null>(null);
   const [selectedSkill, setSelectedSkill] = useState<string>("React");
+  const [toDoList, setToDoList] = useState<string[]>([
+    "Update Resume",
+    "Practice Interview",
+    "Learn Advanced JavaScript",
+  ]);
 
   useEffect(() => {
     async function fetchJob() {
@@ -62,37 +68,59 @@ export default function JobDetailsPage() {
           <h2 className="text-xl font-bold text-center ">Job Details</h2>
           <div className="space-y-4">
             <h1 className="text-xl font-bold text-blue-800">{job.position}</h1>
-            {/* {job.requirements.map((el, i) => (
-              <ol>
-                <li key={i}>{el}</li>
-              </ol>
-            ))} */}
-            <h2 className=" font-semibold text-gray-700">{job.company}</h2>
-            <Badge variant="outline">{job.status}</Badge>
+            <h2 className="font-semibold text-gray-700">{job.company}</h2>
+            <StatusBadge status={job.status} />
+
+            {/* Job Requirements */}
+            <div className="mt-4">
+              <h3 className="font-semibold text-lg">Job Requirements</h3>
+              <ul className="list-disc list-inside text-gray-800 mt-2">
+                {job.requirements.map((el, i) => (
+                  <li key={i} className="text-sm">
+                    {el}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* To-Do List */}
+            <div className="mt-4">
+              <h3 className="font-semibold text-lg">To-Do List</h3>
+              <ul className="mt-2 space-y-2">
+                {toDoList.map((task, i) => (
+                  <li key={i} className="flex items-center gap-2">
+                    <input type="checkbox" className="w-4 h-4" />
+                    <span className="text-sm">{task}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </div>
       </div>
 
       <div className="flex-1 flex items-center justify-center px-10 shadow-2xl">
         <div className="container mx-auto overflow-y-scroll ">
-          <h3 className="text-lg font-bold mb-4">Tests to Take</h3>
-          <Accordion type="single" collapsible>
-            {job.tests?.map((test, i) => (
-              <AccordionItem value={test.category} key={i}>
-                <AccordionTrigger>
-                  <Link href={`/test/${test._id}/intro`}>
-                    <Badge
-                      variant="secondary"
-                      className="px-4 py-2 text-base cursor-pointer"
-                    >
-                      {test.category}
-                    </Badge>
-                  </Link>
-                </AccordionTrigger>
-                <AccordionContent>{test.summary}</AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
+          <div className="overflow-y-auto max-h-56">
+            <h3 className="text-lg font-bold mb-4">Tests to Take</h3>
+            <Accordion type="single" collapsible>
+              {job.tests?.map((test, i) => (
+                <AccordionItem value={test.category} key={i}>
+                  <AccordionTrigger>
+                    <Link href={`/test/${test._id}/intro`}>
+                      <Badge
+                        variant="secondary"
+                        className="px-4 py-2 text-base cursor-pointer"
+                      >
+                        {test.category}
+                      </Badge>
+                    </Link>
+                  </AccordionTrigger>
+                  <AccordionContent>{test.summary}</AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </div>
 
           <Card className="mt-8 p-4">
             <h3 className="text-lg font-medium">Readiness: {job.readiness}%</h3>

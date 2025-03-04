@@ -33,7 +33,7 @@ export function JobCard({ job }: JobCardProps) {
               <span className="text-sm">{job.company}</span>
             </div>
           </div>
-          <StatusBadge status={job.status} />
+          <StatusBadge status={job.status}  />
         </div>
       </CardHeader>
       <CardContent className="flex-grow">
@@ -66,16 +66,16 @@ export function JobCard({ job }: JobCardProps) {
 export function StatusBadge({ status }: { status: string }) {
   const getStatusConfig = (status: string) => {
     switch (status) {
-      case "ready to applied":
+      case "Ready to applied":
         return { label: "Ready to Apply", variant: "default" };
-      case "applied":
-        return { label: "Applied", variant: "secondary" };
-      case "interview-scheduled":
-        return { label: "Interview Scheduled", variant: "warning" };
-      case "rejected":
+      case "Pending":
+        return { label: "Pending", variant: "secondary" };
+      case "Interview":
+        return { label: "Interview", variant: "warning" };
+      case "Rejected":
         return { label: "Rejected", variant: "destructive" };
-      case "offer-received":
-        return { label: "Offer Received", variant: "success" };
+      case "Accepted":
+        return { label: "Accepted", variant: "success" };
       default:
         return { label: status, variant: "outline" };
     }
@@ -84,7 +84,7 @@ export function StatusBadge({ status }: { status: string }) {
   const config = getStatusConfig(status);
 
   return (
-    <Badge variant={config.variant as any} className="capitalize">
+    <Badge variant={config.variant as any} className="capitalize ">
       {config.label}
     </Badge>
   );
