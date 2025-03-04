@@ -19,12 +19,15 @@ export default function Jobs() {
         {
           method: "GET",
           headers: {
-            Cookie: `access_token=${access_token?.value}`,
+            Cookie: `access_token=${access_token.value}`,
           },
         }
       );
 
       const result = (await response.json()).data;
+      console.log(result, "<-- dapet result");
+      
+
       setJobs(result);
     } catch (error) {
       console.error("Failed to fetch jobs:", error);
@@ -37,7 +40,7 @@ export default function Jobs() {
 
   return (
     <div className="container min-h-[90%] mx-auto py-2 px-4 bg-gradient-to-br from-[#0077b6] to-[#023e8a]  rounded-r-3xl shadow-2xl">
-      <div className="absolute top-10 right-64 w-32 h-32 bg-white/10 rounded-full "></div>
+      <div className="absolute top-10 w-32 h-32 bg-white/10 rounded-full "></div>
       <div className="absolute bottom-20 left-10 w-40 h-40 bg-blue-300/10 rounded-full "></div>
 
       <div className="flex justify-between  ">
@@ -64,7 +67,7 @@ export default function Jobs() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {jobs.map((job) => (
+        {jobs?.map((job) => (
           <Link key={job._id} href={`/jobs/${job._id}`}>
             <JobCard key={job._id} job={job} />
           </Link>
