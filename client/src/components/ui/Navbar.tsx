@@ -23,7 +23,9 @@ export default function Navbar() {
               <Link href={'/jobs'}>
                 <h1 className="text-lg tracking-wide hover:underline">Jobs</h1>
               </Link>
+              <Link href={'/purchase'}>
               <h1 className="text-lg tracking-wide hover:underline">Purchase</h1>
+              </Link>
             </div>
           </div>
 

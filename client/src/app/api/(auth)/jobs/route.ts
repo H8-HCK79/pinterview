@@ -15,8 +15,8 @@ export async function GET(request: NextRequest) {
     console.log(userId, "<<< ok userId");
 
     if (status) {
-      const filterJobs = await JobModel.filterByStatus(status);
-      return Response.json({ filterJobs }, { status: 200 });
+      const filterJobs = await JobModel.filterByStatus(status,userId);
+      return Response.json({ data: filterJobs }, { status: 200 });
     }
 
     const jobs = await JobModel.fetchAllByUserId(userId);
@@ -49,7 +49,7 @@ export async function POST(req: NextRequest) {
         { status: 500 }
       );
     }
-    
+
     if ("error" in responseOpenAI) {
       return Response.json(
         { error: responseOpenAI.error }, // ✅ Now safely access error

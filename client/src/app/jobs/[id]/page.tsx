@@ -56,7 +56,7 @@ export default function JobDetailsPage() {
   });
 
   return (
-    <div className="flex min-h-screen w-full overflow-hidden">
+    <div className="flex max-h-screen w-full overflow-hidden">
       <div className="bg-gradient-to-br from-[#0077b6] to-[#023e8a] flex flex-1 flex-col justify-center items-center px-10 relative rounded-r-3xl shadow-2xl">
         <div className="w-full max-w-lg p-8 bg-white backdrop-blur-sm rounded-2xl border border-white/20 shadow-xl">
           <h2 className="text-xl font-bold text-center ">Job Details</h2>
@@ -74,25 +74,27 @@ export default function JobDetailsPage() {
       </div>
 
       <div className="flex-1 flex items-center justify-center px-10 shadow-2xl">
-        <div className="container mx-auto overflow-y-scroll ">
+        <div className="container mx-auto ">
           <h3 className="text-lg font-bold mb-4">Tests to Take</h3>
-          <Accordion type="single" collapsible>
-            {job.tests?.map((test, i) => (
-              <AccordionItem value={test.category} key={i}>
-                <AccordionTrigger>
-                  <Link href={`/test/${test._id}/intro`}>
-                    <Badge
-                      variant="secondary"
-                      className="px-4 py-2 text-base cursor-pointer"
-                    >
-                      {test.category}
-                    </Badge>
-                  </Link>
-                </AccordionTrigger>
-                <AccordionContent>{test.summary}</AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
+          <div className=" overflow-y-auto max-h-44 ">
+            <Accordion type="single" collapsible>
+              {job.tests?.map((test, i) => (
+                <AccordionItem value={test.category} key={i}>
+                  <AccordionTrigger>
+                    <Link href={`/test/${test._id}/intro`}>
+                      <Badge
+                        variant="secondary"
+                        className="px-4 py-2 text-base cursor-pointer"
+                      >
+                        {test.category}
+                      </Badge>
+                    </Link>
+                  </AccordionTrigger>
+                  <AccordionContent>{test.summary}</AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </div>
 
           <Card className="mt-8 p-4">
             <h3 className="text-lg font-medium">Readiness: {job.readiness}%</h3>

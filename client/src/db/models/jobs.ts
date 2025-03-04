@@ -77,9 +77,9 @@ export default class JobModel extends Mongoloquent {
     }
   }
 
-  static async filterByStatus(status: string) {
+  static async filterByStatus(status: string,userId:string) {
     try {
-      const filterJob = await JobModel.where("status", status).get();
+      const filterJob = await JobModel.where("status", status).where('userId',new ObjectId(userId)).get();
       //kalo pakai first baru data ny berupa objek
       return filterJob;
     } catch (error) {
