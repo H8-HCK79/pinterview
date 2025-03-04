@@ -22,9 +22,10 @@ export default async function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-1">
         <div className="flex items-center justify-between h-14">
           <div className="flex justify-between gap-5 items-center">
+            <Link href={"/"}>
             <h1 className="text-2xl font-semibold tracking-widest text-gray-800">
               PINTERVIEW
-            </h1>
+            </h1></Link>
             <div className="flex gap-5">
               <Link href={"/jobs"}>
                 <h1 className="text-lg tracking-wide hover:underline">Jobs</h1>

@@ -18,7 +18,7 @@ export default function Home() {
           Get the best advices from our experts, including expert artists,
           painters, marathon enthusiasts and RDX, totally free.
         </p>
-        <Link href={'/jobs'}>
+        <Link href={'/login'}>
         <Button className="px-5  bg-[#0077b6] relative z-50 text-white font-sans mt-5 text-xl border-indigo-500 hover:bg-[#00b4d8]">
 
           Get Started
