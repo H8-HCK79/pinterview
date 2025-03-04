@@ -7,6 +7,8 @@ export interface ITest {
   position: string;
   summary: string;
   score: number;
+  isGenerated: boolean;
+  isReviewed: boolean;
   createdAt: string;
   updatedAt: string;
 }

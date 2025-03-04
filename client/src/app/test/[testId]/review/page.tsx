@@ -40,15 +40,20 @@ export default function ReviewPage() {
     }
   };
 
-  const handleSubmit = async () => {
+  const handleSubmitReview = async () => {
     if (!testId) return;
     try {
-      await fetch(
+      const res = await fetch(
         `${process.env.NEXT_PUBLIC_BASE_URL}/tests/${testId}/review`,
         { method: "POST" }
       );
+      if(!res.ok) {
+        throw res
+      }
+
       fetchReviewData(); // Refresh review data reactively
     } catch (err) {
+      console.log(err, )
       setError("Failed to submit review request.");
     }
   };
@@ -96,7 +101,7 @@ export default function ReviewPage() {
         </h1>
 
         <button
-          onClick={handleSubmit}
+          onClick={handleSubmitReview}
           className="mb-8 px-6 py-3 bg-white text-blue-700 rounded-lg hover:bg-blue-50 transition-colors duration-200 font-semibold shadow-lg mx-auto block"
         >
           Submit Review
