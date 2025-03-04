@@ -2,7 +2,7 @@
 import React from "react";
 import { BackgroundLines } from "@/components/ui/background-lines";
 import { Button } from "@/components/ui/button";
-
+import Link from "next/link";
 
 
 export default function Home() {
@@ -18,9 +18,11 @@ export default function Home() {
           Get the best advices from our experts, including expert artists,
           painters, marathon enthusiasts and RDX, totally free.
         </p>
+        <Link href={'/jobs'}>
         <Button className="px-5  bg-[#0077b6] relative z-50 text-white font-sans mt-5 text-xl border-indigo-500 hover:bg-[#00b4d8]">
+
           Get Started
-        </Button>
+        </Button></Link>
       </BackgroundLines>
 
 
