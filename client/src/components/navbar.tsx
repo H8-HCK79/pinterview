@@ -7,7 +7,7 @@ export default function Navbar() {
     "use server";
 
     const cookieStore = cookies();
-    (await cookieStore).delete("token");
+    (await cookieStore).delete("access_token");
     redirect("/login");
   }
 

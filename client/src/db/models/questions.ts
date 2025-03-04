@@ -19,7 +19,7 @@ export default class QuestionModel extends Mongoloquent {
     try {
       const question = await QuestionModel.find(new ObjectId(testId));
 
-      return question.data as IQuestion
+      return question.data as IQuestion;
     } catch (error) {
       throw error;
     }
@@ -27,11 +27,55 @@ export default class QuestionModel extends Mongoloquent {
 
   static async findAllByTestId(testId: string) {
     try {
-      const tests = await QuestionModel.where(
+      const questions = await QuestionModel.where(
         "testId",
         new ObjectId(testId)
       ).get();
-      return tests as IQuestion[];
+      return questions as IQuestion[];
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  static async findConceptsByTestId(testId: string) {
+    try {
+      let conceptQuestions: unknown = await QuestionModel.where(
+        "testId",
+        new ObjectId(testId)
+      ).paginate(1, 5);
+      console.log(conceptQuestions, "<<< ok");
+
+      return conceptQuestions as {
+        data: IQuestion[];
+        meta: {
+          total: number;
+          page: number;
+          perPage: number;
+          lastPage: number;
+        };
+      };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  static async findTechnicalsByTestId(testId: string) {
+    try {
+      let technicalQuestions: unknown = await QuestionModel.where(
+        "testId",
+        new ObjectId(testId)
+      ).paginate(2, 5);
+      console.log(technicalQuestions, "<<< ok");
+
+      return technicalQuestions as {
+        data: IQuestion[];
+        meta: {
+          total: number;
+          page: number;
+          perPage: number;
+          lastPage: number;
+        };
+      };
     } catch (error) {
       throw error;
     }

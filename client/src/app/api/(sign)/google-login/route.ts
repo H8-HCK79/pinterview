@@ -9,7 +9,7 @@ export async function POST(req: Request) {
     const access_token = await UserModel.GoogleLogin(body.token);
 
     const cookieStore = await cookies();
-    cookieStore.set("token", access_token.accessToken);
+    cookieStore.set("access_token", access_token.accessToken);
     return Response.json({ access_token }, { status: 200 });
   } catch (error) {
     console.log(error, "SSSS");

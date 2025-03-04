@@ -33,7 +33,7 @@ export default function Login() {
 
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/google-login`,
+        `${process.env.NEXT_PUBLIC_BASE_URL}/google-login`,
         {
           method: "POST",
           headers: {
@@ -60,7 +60,7 @@ export default function Login() {
     e.preventDefault();
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/login`,
+        `${process.env.NEXT_PUBLIC_BASE_URL}/login`,
         {
           method: "POST",
           headers: {

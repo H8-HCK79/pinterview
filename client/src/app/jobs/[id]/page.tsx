@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-// import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import {
   Accordion,
@@ -27,40 +26,41 @@ import { IAggregatedJob } from "@/interfaces/IJob";
 import Link from "next/link";
 
 export default function JobDetailsPage() {
+  // State Hooks - Always in the same order
   const params = useParams<{ id: string }>();
   const { id } = params;
-  console.log(id, "<== id dari params nih brok");
-  const [job, setJob] = useState<IAggregatedJob>();
-  const [selectedSkill, setSelectedSkill] = useState("React");
 
-  // const [prepareList, setPrepareList] = useState(job.prepareList);
+  const [job, setJob] = useState<IAggregatedJob | null>(null);
+  const [selectedSkill, setSelectedSkill] = useState<string>("React");
 
-  // const toggleTask = (index: number) => {
-  //   const updatedList = [...prepareList];
-  //   updatedList[index].completed = !updatedList[index].completed;
-  //   setPrepareList(updatedList);
-  // };
-  // const completedTasks = prepareList.filter((item) => item.completed).length;
-  // const totalTasks = prepareList.length;
-  // const progressPercentage = (completedTasks / totalTasks) * 100;
+  // Fetch job data on component mount
   useEffect(() => {
     async function fetchJob() {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/jobs/${id}`,
-        {
-          method: "GET",
-        }
-      );
-      const data = await res.json();
-      setJob(data.data);
+      if (!id) return; // Prevent fetch if id is undefined
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_BASE_URL}/jobs/${id}`
+        );
+        const data = await res.json();
+        setJob(data.data);
+      } catch (error) {
+        console.error("Error fetching job data:", error);
+      }
     }
     fetchJob();
-  }, []);
+  }, [id]);
 
+  // Show loading state if job is not yet loaded
   if (!job) {
     return <div className="text-center py-10">Loading...</div>;
   }
-  console.log(job, "< jing");
+
+  // Convert job tests into a format suitable for RadarChart
+  const chartedTests: Record<string, number> = {};
+  job.tests?.forEach((test) => {
+    chartedTests[test.category] = test.score / 10;
+  });
+  console.log(chartedTests, "chartedTests");
 
   return (
     <div className="container mx-auto py-8 px-4 min-h-screen">
@@ -78,18 +78,21 @@ export default function JobDetailsPage() {
             <StatusBadge status={job.status} />
           </div>
 
-          {/* Requirement */}
+          {/* Requirement List */}
           <div>
             <h1 className="text-xl font-bold">Requirement</h1>
-            {job.requirements?.map((req: string, i: number) => (
-              <li key={i}>{req}</li>
-            ))}
+            <ul>
+              {job?.requirements?.map((req: string, i: number) => (
+                <li key={i}>{req}</li>
+              ))}
+            </ul>
           </div>
+
           {/* Tests to Take */}
           <div>
             <h3 className="text-lg font-medium mb-4">Tests to take:</h3>
             <Accordion type="single" collapsible className="w-full">
-              {job.tests.map((test, i) => (
+              {job?.tests?.map((test, i) => (
                 <AccordionItem value={test.category} key={i}>
                   <AccordionTrigger>
                     <Link href={`/test/${test._id}`}>
@@ -115,37 +118,6 @@ export default function JobDetailsPage() {
 
         {/* Right Column */}
         <div className="space-y-8">
-          {/* To Prepare List */}
-          {/* <div>
-            <h3 className="text-lg font-medium mb-2">To prepare list:</h3>
-            <ul className="space-y-2">
-              {prepareList.map((item, index) => (
-                <li key={index} className="flex items-center space-x-2">
-                  <Checkbox
-                    checked={item.completed}
-                    onCheckedChange={() => toggleTask(index)}
-                  />
-                  <span
-                    className={
-                      item.completed ? "line-through text-muted-foreground" : ""
-                    }
-                  >
-                    {item.task}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </div> */}
-
-          {/* Overall Progress  */}
-          {/* <Card className="p-4">
-            <h3 className="text-lg font-medium mb-2">Overall Progress</h3>
-            <Progress value={progressPercentage} className="w-full" />
-            <p className="text-sm text-muted-foreground mt-2">
-              {completedTasks} of {totalTasks} tasks completed
-            </p>
-          </Card> */}
-
           {/* Readiness Chart */}
           <Card className="p-4">
             <div className="flex justify-between items-center mb-4">
@@ -164,13 +136,13 @@ export default function JobDetailsPage() {
                     </DialogDescription>
                   </DialogHeader>
                   <div className="py-4">
-                    {Object.entries(job.tests).map(({category, score}) => (
+                    {job?.tests?.map((test) => (
                       <div
-                        key={category}
+                        key={test._id.toString()}
                         className="flex justify-between items-center mb-2"
                       >
-                        <span>{category}</span>
-                        <Progress value={score* 100} className="w-1/2" />
+                        <span>{test.category}</span>
+                        <Progress value={test.score * 100} className="w-1/2" />
                       </div>
                     ))}
                   </div>
@@ -178,7 +150,7 @@ export default function JobDetailsPage() {
               </Dialog>
             </div>
             <div className="h-64">
-              <RadarChart data={job.tests} skillName={selectedSkill} />
+              <RadarChart data={chartedTests} skillName={selectedSkill} />
             </div>
           </Card>
         </div>
