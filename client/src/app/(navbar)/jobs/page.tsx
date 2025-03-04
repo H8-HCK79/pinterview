@@ -1,28 +1,42 @@
+"use client";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { JobCard } from "@/components/ui/JobsCard";
 import { IJobClient } from "@/interfaces/IJob";
-import { Filter } from "lucide-react";
 import Link from "next/link";
-import { cookies } from "next/headers";
+import Cookies from "js-cookie";
 
-export default async function Jobs() {
-  const cookieStore = await cookies();
-  const access_token = cookieStore.get("access_token");
+export default function Jobs() {
+  const [status, setStatus] = useState("Ready to apply");
+  const [jobs, setJobs] = useState<IJobClient[]>([]);
 
-  console.log(access_token, "access_token");
+  const fetchJobs = async (selectedStatus: string) => {
+    const access_token = Cookies.get("access_token");
 
-  const data = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/jobs`, {
-    method: "GET",
-    headers: {
-      Cookie: `access_token=${access_token?.value}`,
-    },
-  });
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/jobs?status=${selectedStatus}`,
+        {
+          method: "GET",
+          headers: {
+            Cookie: `access_token=${access_token?.value}`,
+          },
+        }
+      );
 
-  console.log(data, "<<< ok jobs");
-  const jobs: IJobClient[] = (await data.json()).data;
+      const result = (await response.json()).data;
+      setJobs(result);
+    } catch (error) {
+      console.error("Failed to fetch jobs:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchJobs(status);
+  }, [status]);
 
   return (
-    <div className="container mx-auto py-2 px-4 min-h-screen  bg-gradient-to-br from-[#0077b6] to-[#023e8a]  rounded-r-3xl shadow-2xl">
+    <div className="container min-h-[90%] mx-auto py-2 px-4 bg-gradient-to-br from-[#0077b6] to-[#023e8a]  rounded-r-3xl shadow-2xl">
       <div className="absolute top-10 right-64 w-32 h-32 bg-white/10 rounded-full "></div>
       <div className="absolute bottom-20 left-10 w-40 h-40 bg-blue-300/10 rounded-full "></div>
 
@@ -30,14 +44,21 @@ export default async function Jobs() {
         <h1 className="text-3xl text-white font-bold mb-8">Job Applications</h1>
         {/* perbuttonan */}
         <div className="flex gap-1">
-          <Button>
-            <Filter />
-            Filter
-          </Button>
+          <select
+            value={status}
+            onChange={(e) => setStatus(e.target.value)}
+            className="  border rounded"
+          >
+            <option value="Ready to apply">Filter by Status</option>
+            <option value="Pending">Pending</option>
+            <option value="Applied">Applied</option>
+            <option value="Interview">Interview</option>
+            <option value="Accepted">Accepted</option>
+            <option value="Ghosted">Ghosted</option>
+            <option value="Rejected">Rejected</option>
+          </select>
           <Link href={"/add-jobs"}>
-            <Button variant="outline" >
-              Add Jobs
-            </Button>
+            <Button variant="outline">Add Jobs</Button>
           </Link>
         </div>
       </div>
