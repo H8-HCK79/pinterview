@@ -1,7 +1,9 @@
 import TransactionModel from "@/db/models/transaction";
 import UserModel from "@/db/models/users";
+import { IPackage } from "@/interfaces/ITransaction";
 import { IUser } from "@/interfaces/IUser";
-import { initiateMidtransTrx } from "@/services/midtrans/initiateMIdtransTrx";
+import { initiateMidtrans } from "@/services/midtrans/initiateMidtrans";
+import { ObjectId } from "mongodb";
 
 export type Params = {
   params: Promise<{ testId: string }>;
@@ -11,26 +13,19 @@ export async function POST(req: Request) {
     const body = await req.json();
     const userId = req.headers.get("x-user-id") as string;
 
-    
     const user: IUser = await UserModel.findById(userId);
+    console.log(body, user);
+    const response = await initiateMidtrans(body.package, user);
 
-    const { fullName, email } = user;
-    const { amount } = body;
+    if (!response) {
+      throw response;
+    }
 
-    const { transactionToken, orderId }: any = await initiateMidtransTrx({
-      fullName,
-      email,
-      amount,
-    }); // used any because from js file
-    // {
-    //     "token": "60c7b2e1-a994-4333-b0ab-d3b3dafae17b",
-    //     "redirect_url": "https://app.sandbox.midtrans.com/snap/v4/redirection/60c7b2e1-a994-4333-b0ab-d3b3dafae17b"
-    // }
-    // simpan transaction di database
     await TransactionModel.insert({
-      orderId: orderId,
-      userId: "isi nanti",
-      amount: amount,
+      orderId: response?.orderId,
+      userId: new ObjectId(userId),
+      amount: body.package.price,
+      quota: body.package.quota,
       status: "Pending",
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -39,12 +34,11 @@ export async function POST(req: Request) {
     return Response.json(
       {
         data: {
-          message: "Order created",
-          transactionToken,
-          orderId,
+          token: response.token,
+          redirectUrl: response.redirectUrl,
         },
       },
-      { status: 200 }
+      { status: 201 }
     );
   } catch (err) {
     console.error("Error handling request:", err);

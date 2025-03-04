@@ -5,7 +5,15 @@ export interface ITransaction {
   userId: ObjectId;
   orderId: string;
   amount: number;
+  quota: number;
   status: string;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface IPackage {
+  id: number;
+  quota: number;
+  price: number;
+  description: string;
 }
