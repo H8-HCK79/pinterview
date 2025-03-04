@@ -8,7 +8,7 @@ export async function POST(req: Request) {
     const access_token = await UserModel.Login(body);
 
     const cookieStore = await cookies();
-    cookieStore.set("token", access_token);
+    cookieStore.set("access_token", access_token);
 
     return Response.json({ access_token }, { status: 200 });
   } catch (err: unknown) {

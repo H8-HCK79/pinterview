@@ -1,62 +1,19 @@
 import { Button } from "@/components/ui/button";
 import { JobCard } from "@/components/ui/JobsCard";
-import { IJob } from "@/interfaces/IJob";
+import { IJob, IJobClient } from "@/interfaces/IJob";
 import { Filter } from "lucide-react";
 import Link from "next/link";
 
-// const jobs = [
-//   {
-//     id: 1,
-//     company: "PT Mindo Small Business Solutions",
-//     position: "Senior Software Developer (Python/Django)",
-//     skills: [
-//       "Python",
-//       "Django",
-//       "PostgreSQL",
-//       "Docker",
-//       "HTML",
-//       "CSS",
-//       "Tailwind",
-//       "JavaScript",
-//     ],
-//     status: "ongoing",
-//   },
-//   {
-//     id: 2,
-//     company: "Tech Innovators Inc.",
-//     position: "Frontend Developer",
-//     skills: ["React", "TypeScript", "HTML", "CSS", "Tailwind", "JavaScript"],
-//     status: "applied",
-//   },
-//   {
-//     id: 3,
-//     company: "Global Systems Ltd.",
-//     position: "Full Stack Engineer",
-//     skills: ["Node.js", "Express", "MongoDB", "React", "JavaScript", "AWS"],
-//     status: "interview-scheduled",
-//   },
-//   {
-//     id: 4,
-//     company: "Data Solutions Co.",
-//     position: "Data Engineer",
-//     skills: ["Python", "SQL", "Spark", "Hadoop", "AWS", "ETL"],
-//     status: "rejected",
-//   },
-//   {
-//     id: 5,
-//     company: "Mobile Creations",
-//     position: "Mobile Developer",
-//     skills: ["React Native", "Swift", "Kotlin", "JavaScript", "Firebase"],
-//     status: "offer-received",
-//   },
-// ];
+
 export default async function Jobs() {
   const data = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/jobs`, {
-    cache: "no-store", // Pastikan selalu fetch data terbaru
+    method: "GET",
+    credentials: "include",
   });
 
-  const jobs: IJob[] = (await data.json()).data;
-  // console.log(jobs, "<<< ok jobs");
+  console.log(data, "<<< ok jobs");
+  const jobs: IJobClient[] = (await data.json()).data;
+  
   return (
     <div className="container mx-auto py-2 px-4 min-h-screen ">
       <div className="flex justify-between  ">

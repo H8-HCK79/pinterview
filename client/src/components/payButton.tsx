@@ -20,7 +20,7 @@ export default function PayButton() {
       const snapWindow = window as SnapWindow;
 
       const data: any = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/midtrans/initiate`,
+        `${process.env.NEXT_PUBLIC_BASE_URL}/midtrans/initiate`,
         {
           method: "POST",
           headers: {

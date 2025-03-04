@@ -10,13 +10,16 @@ export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
     const status = searchParams.get("status");
+    const userId = request.headers.get("x-user-id") as string;
+
+    console.log(userId, "<<< ok userId");
 
     if (status) {
       const filterJobs = await JobModel.filterByStatus(status);
       return Response.json({ filterJobs }, { status: 200 });
     }
 
-    const jobs = await JobModel.getAllJob();
+    const jobs = await JobModel.fetchAllByUserId(userId);
     return Response.json({ data: jobs }, { status: 200 });
   } catch (error: unknown) {
     if (error instanceof ZodError) {

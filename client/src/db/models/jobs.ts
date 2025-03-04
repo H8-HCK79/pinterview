@@ -13,7 +13,7 @@ const jobSchema = z.object({
 export default class JobModel extends Mongoloquent {
   static collection = "jobs";
 
-  static async getAllJob() {
+  static async fetchAll() {
     try {
       const jobs = await JobModel.get();
 
@@ -23,8 +23,18 @@ export default class JobModel extends Mongoloquent {
     }
   }
 
+  static async fetchAllByUserId(userId: string) {
+    try {
+      const jobs = await JobModel.where("userId", new ObjectId(userId)).get();
+
+      return jobs;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   static async tests() {
-    return JobModel.hasMany(TestModel, "jobId", "_id");
+    return await JobModel.hasMany(TestModel, "jobId", "_id");
   }
 
   static async fetchById(jobId: string) {
@@ -32,13 +42,14 @@ export default class JobModel extends Mongoloquent {
       const job = await JobModel.with("tests").find(jobId);
 
       // your relationship data can accessed in the data property
-      // console.log(job.data);
+      console.log(job.data);
 
       return job.data;
     } catch (error) {
       throw error;
     }
   }
+
   static async generate(payload: IJobResponseAI | string, userId: string) {
     try {
       if (typeof payload === "string") {

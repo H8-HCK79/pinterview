@@ -22,6 +22,27 @@ export interface IJob {
   updatedAt: string;
 }
 
+export interface IJobClient {
+  _id: string;
+  userId: string;
+  company: string;
+  position: string;
+  description: string;
+  skills: string[];
+  requirements: string[];
+  status:
+    | "Ready to apply"
+    | "Applied"
+    | "Pending"
+    | "Interview"
+    | "Accepted"
+    | "Ghosted"
+    | "Rejected";
+  readiness: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface IAggregatedJob {
   _id: ObjectId;
   userId: ObjectId;

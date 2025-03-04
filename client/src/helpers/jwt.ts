@@ -5,7 +5,7 @@ import { ObjectId } from 'mongodb'
 const secret = process.env.JWT_SECRET as string
 
 export type signTokenInterface = {
-    _id:ObjectId
+    _id:ObjectId,
 }
 
 export function signToken(payload:signTokenInterface) {

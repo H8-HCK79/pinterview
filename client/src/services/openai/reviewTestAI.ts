@@ -8,6 +8,7 @@ export async function reviewTestAI(
     _id: ObjectId;
     type: string;
     question: string;
+    answer: string;
     expectedAnswer: string;
   }[]
 ): Promise<{
@@ -23,9 +24,9 @@ export async function reviewTestAI(
         role: "system",
         content: `
   You are a strict interviewer reviewing test answers.
-  For each question, assess if the provided answer fully matches the expected answer.
-  If it's a concept question, determine if it fully or partially fits the key points in expectedAnswer.
-  If it's a technical question, evaluate the correctness of the code.
+  For each question, assess if the provided answer (from user) fully matches the expectedAnswer.
+  If it's a concept question, determine if the answer is fully or partially fits the key points in expectedAnswer.
+  If it's a technical question, evaluate the correctness of the code answer.
 
   Return only JSON with the following format:
   {
