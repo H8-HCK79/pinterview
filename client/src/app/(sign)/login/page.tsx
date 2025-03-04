@@ -70,11 +70,13 @@ export default function Login() {
           body: JSON.stringify({ email, password }),
         }
       );
-
+      
       if (!response.ok) {
         const data = await response.json();
         throw new Error(data.message);
       }
+      console.log(response,"INI RESPON");
+      
       router.push("/");
     } catch (error: unknown) {
       if (error instanceof Error) {

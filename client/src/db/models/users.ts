@@ -84,7 +84,7 @@ export default class UserModel extends Mongoloquent {
   static async GoogleLogin(googleToken: string) {
     try {
       if (!googleToken) throw new Error("Google token is missing");
-      const googleClientId = process.env.GOOGLE_CLIENT_ID as string;
+      const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID as string;
       const client = new OAuth2Client(googleClientId);
 
       const ticket = await client.verifyIdToken({
