@@ -49,7 +49,7 @@ export default function Login() {
         throw new Error(data.message);
       }
 
-      router.push("/");
+      router.push("/jobs");
     } catch (error: unknown) {
       if (error instanceof Error) {
         setError(error.message);
@@ -77,7 +77,7 @@ export default function Login() {
       }
       console.log(response,"INI RESPON");
       
-      router.push("/");
+      router.push("/jobs");
     } catch (error: unknown) {
       if (error instanceof Error) {
         setError(error.message);
