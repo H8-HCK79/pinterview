@@ -25,7 +25,7 @@ export function JobCard({ job }: JobCardProps) {
       <CardHeader className="pb-2">
         <div className="flex items-start justify-between">
           <div className="space-y-1">
-            <h3 className="text-lg font-semibold leading-tight">
+            <h3 className="text-lg leading-tight text-[#0077b6] font-bold">
               {job.position}
             </h3>
             <div className="flex items-center text-muted-foreground">
@@ -52,13 +52,11 @@ export function JobCard({ job }: JobCardProps) {
         </div>
       </CardContent>
       <CardFooter className="pt-2 border-t">
-        <div className="flex justify-between w-full">
-          <button className="text-sm text-primary hover:underline">
+        <div className="flex justify-end w-full">
+          <button className="btn bg-blue-400 border border-black text-primary hover:underline">
             View Details
           </button>
-          <button className="text-sm text-primary hover:underline">
-            Prepare Interview
-          </button>
+         
         </div>
       </CardFooter>
     </Card>

@@ -47,13 +47,13 @@ export default function ReviewPage() {
         `${process.env.NEXT_PUBLIC_BASE_URL}/tests/${testId}/review`,
         { method: "POST" }
       );
-      if(!res.ok) {
-        throw res
+      if (!res.ok) {
+        throw res;
       }
 
       fetchReviewData(); // Refresh review data reactively
     } catch (err) {
-      console.log(err, )
+      console.log(err);
       setError("Failed to submit review request.");
     }
   };
@@ -136,7 +136,7 @@ export default function ReviewPage() {
                   </div>
                   <div className="flex flex-wrap gap-4 mt-4">
                     <div
-                      className={`px-4 py-2 rounded-full ${
+                      className={`flex flex-col px-5 justify-center rounded-xl ${
                         item.correctness >= 7
                           ? "bg-green-100 text-green-700"
                           : item.correctness >= 4
@@ -144,7 +144,7 @@ export default function ReviewPage() {
                           : "bg-red-100 text-red-700"
                       } font-medium inline-block`}
                     >
-                      Correctness: {item.correctness}
+                      Correctness: <h1 className="text-center">{item.correctness}</h1>
                     </div>
                     <div className="flex-1 p-3 bg-gray-50 rounded-lg">
                       <p className="text-gray-700 font-medium">Feedback:</p>

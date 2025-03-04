@@ -60,7 +60,7 @@ export default function RadarChart({ data, skillName }: RadarChartProps) {
         const labelX = centerX + (radius + 20) * Math.cos(angle);
         const labelY = centerY + (radius + 20) * Math.sin(angle);
 
-        ctx.fillStyle = "#f00"; // Red color for labels
+        ctx.fillStyle = "#0077b6"; // Red color for labels
         ctx.fillText(category, labelX, labelY);
       });
 
@@ -100,11 +100,11 @@ export default function RadarChart({ data, skillName }: RadarChartProps) {
       ctx.closePath();
 
       // Fill with semi-transparent green
-      ctx.fillStyle = "rgba(34, 197, 94, 0.5)";
+      ctx.fillStyle = "#0077b6";
       ctx.fill();
 
       // Stroke the data polygon
-      ctx.strokeStyle = "rgb(34, 197, 94)";
+      ctx.strokeStyle = "#0077b6";
       ctx.lineWidth = 2;
       ctx.stroke();
 

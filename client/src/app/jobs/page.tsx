@@ -1,14 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { JobCard } from "@/components/ui/JobsCard";
-import { IJob, IJobClient } from "@/interfaces/IJob";
+import { IJobClient } from "@/interfaces/IJob";
 import { Filter } from "lucide-react";
 import Link from "next/link";
-import { cookies } from 'next/headers'
-
+import { cookies } from "next/headers";
 
 export default async function Jobs() {
   const cookieStore = await cookies();
-  const access_token = cookieStore.get('access_token')
+  const access_token = cookieStore.get("access_token");
 
   console.log(access_token, "access_token");
 
@@ -21,11 +20,14 @@ export default async function Jobs() {
 
   console.log(data, "<<< ok jobs");
   const jobs: IJobClient[] = (await data.json()).data;
-  
+
   return (
-    <div className="container mx-auto py-2 px-4 min-h-screen ">
+    <div className="container mx-auto py-2 px-4 min-h-screen  bg-gradient-to-br from-[#0077b6] to-[#023e8a]  rounded-r-3xl shadow-2xl">
+      <div className="absolute top-10 right-64 w-32 h-32 bg-white/10 rounded-full "></div>
+      <div className="absolute bottom-20 left-10 w-40 h-40 bg-blue-300/10 rounded-full "></div>
+
       <div className="flex justify-between  ">
-        <h1 className="text-xl font-md mb-8">Job Applications</h1>
+        <h1 className="text-3xl text-white font-bold mb-8">Job Applications</h1>
         {/* perbuttonan */}
         <div className="flex gap-1">
           <Button>
@@ -33,7 +35,9 @@ export default async function Jobs() {
             Filter
           </Button>
           <Link href={"/add-jobs"}>
-            <Button variant="outline">Add Jobs</Button>
+            <Button variant="outline" >
+              Add Jobs
+            </Button>
           </Link>
         </div>
       </div>
