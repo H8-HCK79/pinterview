@@ -3,12 +3,20 @@ import { JobCard } from "@/components/ui/JobsCard";
 import { IJob, IJobClient } from "@/interfaces/IJob";
 import { Filter } from "lucide-react";
 import Link from "next/link";
+import { cookies } from 'next/headers'
 
 
 export default async function Jobs() {
+  const cookieStore = await cookies();
+  const access_token = cookieStore.get('access_token')
+
+  console.log(access_token, "access_token");
+
   const data = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/jobs`, {
     method: "GET",
-    credentials: "include",
+    headers: {
+      Cookie: `access_token=${access_token?.value}`,
+    },
   });
 
   console.log(data, "<<< ok jobs");

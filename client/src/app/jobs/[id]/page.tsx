@@ -82,8 +82,8 @@ export default function JobDetailsPage() {
           <div>
             <h1 className="text-xl font-bold">Requirement</h1>
             <ul>
-              {job?.requirements?.map((req: string, i: number) => (
-                <li key={i}>{req}</li>
+              {job?.requirements?.map((requirement: string, i: number) => (
+                <li key={i}>{requirement}</li>
               ))}
             </ul>
           </div>
@@ -95,7 +95,7 @@ export default function JobDetailsPage() {
               {job?.tests?.map((test, i) => (
                 <AccordionItem value={test.category} key={i}>
                   <AccordionTrigger>
-                    <Link href={`/test/${test._id}`}>
+                    <Link href={`/test/${test._id}/intro`}>
                       <Badge
                         variant={
                           selectedSkill === test.category

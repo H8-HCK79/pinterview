@@ -27,6 +27,13 @@ export async function POST(req: Request, { params }: Params) {
     // const { category, position } = await req.json();
     const test: ITest = await TestModel.findById(testId);
 
+    if (test.isGenerated === true) {
+      return Response.json(
+        { error: "This test has already generated" },
+        { status: 400 }
+      );
+    }
+
     const responseOpenAI = await generateQuestionsAI(test.category, test.position);
 
     if (!responseOpenAI) {

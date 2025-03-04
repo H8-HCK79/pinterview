@@ -10,6 +10,25 @@ export default function IntroPage() {
 
   const [agreed, setAgreed] = useState(false);
 
+  const handleGenerateQuestions = async () => {
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/tests/${testId}/questions`,
+        {
+          method: "POST",
+        }
+      );
+      if (!res.ok) {
+        throw res
+      }
+      console.log(res, "<<< ok handleGenerateQuestions");
+
+      router.push(`/test/${testId}/concept`);
+    } catch (err: unknown) {
+      console.log(err, "<<< err handleGenerateQuestions");
+    }
+  };
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
       <div className="max-w-2xl w-full bg-white shadow-lg p-6 rounded-2xl">
@@ -63,7 +82,7 @@ export default function IntroPage() {
               : "bg-gray-400 cursor-not-allowed"
           }`}
           disabled={!agreed}
-          onClick={() => router.push(`/test/${testId}/concept`)}
+          onClick={handleGenerateQuestions}
         >
           Continue to Test
         </button>

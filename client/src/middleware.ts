@@ -13,12 +13,12 @@ export async function middleware(request: NextRequest) {
       const secret = new TextEncoder().encode(process.env.JWT_SECRET);
 
       // === UNCOMMENT NANTI ===
-      // const cookieStore = await cookies();
-      // const access_token = cookieStore.get("access_token")?.value as string;
-      // console.log(access_token, "<<< ok access_token");
+      const cookieStore = await cookies();
+      const access_token = cookieStore.get("access_token")?.value as string;
+      console.log(access_token, "<<< ok access_token");
 
-      const access_token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2M1MWE4ZWRiYjFiYjY3OTEwMGQ2NDkiLCJpYXQiOjE3NDEwMjcyOTF9.t18DlRj3dRPVNpkPrNa3Cqaw3kRlzRmfNLpHQBEuA4A";
+      // const access_token =
+      //   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2M1MWE4ZWRiYjFiYjY3OTEwMGQ2NDkiLCJpYXQiOjE3NDEwMjcyOTF9.t18DlRj3dRPVNpkPrNa3Cqaw3kRlzRmfNLpHQBEuA4A";
 
       if (!access_token) {
         return Response.json({ message: "Unauthorized" }, { status: 401 });

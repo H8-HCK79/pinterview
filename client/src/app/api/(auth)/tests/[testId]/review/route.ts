@@ -1,6 +1,7 @@
 import QuestionModel from "@/db/models/questions";
 import TestModel from "@/db/models/tests";
 import { IQuestion } from "@/interfaces/IQuestion";
+import { ITest } from "@/interfaces/ITest";
 import { reviewTestAI } from "@/services/openai/reviewTestAI";
 
 export type Params = {
@@ -9,6 +10,15 @@ export type Params = {
 export async function POST(req: Request, { params }: Params) {
   try {
     const { testId } = await params;
+
+    const test: ITest = await TestModel.findById(testId);
+
+    if (test.isReviewed === true) {
+      return Response.json(
+        { error: "This test has already reviewed" },
+        { status: 400 }
+      );
+    }
 
     const questions: IQuestion[] = await QuestionModel.findAllByTestId(testId);
     const userResponses = questions.map((questionParent) => {
