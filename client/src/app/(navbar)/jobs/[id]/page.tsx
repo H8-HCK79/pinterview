@@ -23,7 +23,6 @@ import RadarChart from "@/components/radar-chart";
 import { useParams, useRouter } from "next/navigation";
 import type { IAggregatedJob, IProject } from "@/interfaces/IJob";
 import Link from "next/link";
-import { StatusBadge } from "@/components/ui/JobsCard";
 import {
   ArrowLeft,
   Briefcase,
