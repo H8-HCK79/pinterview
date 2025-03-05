@@ -39,10 +39,7 @@ export interface IJobClient {
     | "Ghosted"
     | "Rejected";
   readiness: number;
-  projects: {
-    name: string;
-    isCompleted: string;
-  }[];
+  projects: IProject[];
   createdAt: string;
   updatedAt: string;
 }
@@ -65,13 +62,16 @@ export interface IAggregatedJob {
     | "Rejected";
   readiness: number;
   tests: ITest[];
-  projects: {
-    name: string;
-    isCompleted: string;
-  }[];
+  projects: IProject[];
   createdAt: string;
   updatedAt: string;
 }
+
+export interface IProject {
+  name: string;
+  isCompleted: boolean;
+}
+
 export interface JobInput {
   company: string;
   position: string;
@@ -85,9 +85,6 @@ export interface IJobResponseAI {
     description: string;
     skills: string[];
     requirements: string[];
-    projects: {
-      name: string;
-      isCompleted: string;
-    }[];
+    projects: IProject[];
   };
 }

@@ -5,5 +5,9 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <AnswerProvider>{children}</AnswerProvider>;
+  return (
+    <AnswerProvider>
+      {children}
+    </AnswerProvider>
+  );
 }

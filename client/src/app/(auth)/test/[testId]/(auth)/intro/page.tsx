@@ -1,27 +1,38 @@
 "use client";
 
-import { useParams, useRouter } from "next/navigation";
+import { useSecondsContext } from "@/context/SecondsContext";
+import { redirect, useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function IntroPage() {
   const { testId } = useParams<{ testId: string }>();
   console.log(testId, "ID");
   const router = useRouter();
-
   const [agreed, setAgreed] = useState(false);
+
+  const { setSeconds, setIsPlaying } = useSecondsContext();
+
+  const savedPlaying = localStorage.getItem("is_playing");
+  if (savedPlaying === "true") {
+    redirect(`/test/${testId}/concept`)
+  }
 
   const handleGenerateQuestions = async () => {
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/tests/${testId}/questions`,
-        {
-          method: "POST",
-        }
-      );
-      if (!res.ok) {
-        throw res
-      }
-      console.log(res, "<<< ok handleGenerateQuestions");
+      // const res = await fetch(
+      //   `${process.env.NEXT_PUBLIC_BASE_URL}/tests/${testId}/questions`,
+      //   {
+      //     method: "POST",
+      //   }
+      // );
+      // if (!res.ok) {
+      //   throw res;
+      // }
+      // console.log(res, "<<< ok handleGenerateQuestions");
+
+      // put the context here and start the timer
+      setSeconds(20); // Reset the timer
+      setIsPlaying(true); // Start the timer
 
       router.push(`/test/${testId}/concept`);
     } catch (err: unknown) {
@@ -33,7 +44,7 @@ export default function IntroPage() {
     <div className="flex min-h-screen w-full items-center justify-center bg-gradient-to-r from-[#0077b6] to-[#023e8a]">
       <div className="absolute top-10 right-10 w-32 h-32 bg-white/10 rounded-full"></div>
       <div className="absolute bottom-20 left-10 w-40 h-40 bg-blue-300/10 rounded-full"></div>
-      
+
       <div className="max-w-2xl w-full bg-white shadow-lg p-6 rounded-2xl">
         <h1 className="text-2xl font-bold text-center text-gray-900">
           Welcome to the Test

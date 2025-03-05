@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useParams } from "next/navigation";
+import { useSecondsContext } from "@/context/SecondsContext";
 
 const MonacoEditor = dynamic(() => import("@monaco-editor/react"), {
   ssr: false,
@@ -31,8 +32,16 @@ export default function TechnicalPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const { seconds, setSeconds, isPlaying, setIsPlaying } = useSecondsContext();
 
   console.log(answers);
+
+  const savedPlaying = localStorage.getItem("is_playing");
+  useEffect(() => {
+    if (savedPlaying === "false") {
+      router.push(`/test/${testId}/review`);
+    }
+  }, []);
 
   useEffect(() => {
     async function fetchTechnicalQuestions() {
@@ -99,6 +108,44 @@ export default function TechnicalPage() {
     router.push(`/test/${testId}/review`);
   };
 
+  // Load `seconds` and `isPlaying` from localStorage on mount
+  useEffect(() => {
+    const savedSeconds = localStorage.getItem("remaining_seconds");
+    const savedPlaying = localStorage.getItem("is_playing");
+
+    if (savedSeconds) {
+      setSeconds(parseInt(savedSeconds, 10));
+    }
+    if (savedPlaying === "true") {
+      setIsPlaying(true);
+    }
+  }, []);
+
+  // Save `seconds` & `isPlaying` to localStorage every second
+  useEffect(() => {
+    localStorage.setItem("remaining_seconds", seconds.toString());
+    localStorage.setItem("is_playing", isPlaying.toString());
+  }, [seconds, isPlaying]);
+
+  // Countdown timer
+  useEffect(() => {
+    if (!isPlaying || seconds <= 0) return;
+
+    const timer = setInterval(() => {
+      setSeconds((prev) => (prev > 0 ? prev - 1 : 0));
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [isPlaying, seconds]);
+
+  // Redirect when timer hits 0
+  useEffect(() => {
+    if (seconds <= 0 && isPlaying) {
+      setIsPlaying(false);
+      router.push(`/test/${testId}/review`);
+    }
+  }, [seconds, isPlaying, router]);
+
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center text-white text-lg">
@@ -154,6 +201,10 @@ export default function TechnicalPage() {
           <ChevronRight size={20} />
         </button>
       </div>
+
+      <h1 className="text-white text-4xl font-semibold bg-gray-800 px-6 py-3 rounded-lg shadow-md">
+        Time Left: <span className="text-red-400 font-bold">{seconds}s</span>
+      </h1>
 
       {showConfirmation && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">

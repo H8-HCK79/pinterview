@@ -39,6 +39,7 @@
     "openai": "^4.86.1",
     "qss": "^3.0.0",
     "react": "^19.0.0",
+    "react-countdown-circle-timer": "^3.2.1",
     "react-dom": "^19.0.0",
     "sha512": "^0.0.1",
     "sha512-crypt-ts": "^0.1.27",
