@@ -5,6 +5,8 @@ import { IJob, IJobResponseAI } from "@/interfaces/IJob";
 
 import { generateJobAI } from "@/services/openai/generateJobAI";
 import TestModel from "@/db/models/tests";
+import UserModel from "@/db/models/users";
+import { IUser } from "@/interfaces/IUser";
 
 export async function GET(request: NextRequest) {
   try {
@@ -15,7 +17,7 @@ export async function GET(request: NextRequest) {
     console.log(userId, "<<< ok userId");
 
     if (status) {
-      const filterJobs = await JobModel.filterByStatus(status,userId);
+      const filterJobs = await JobModel.filterByStatus(status, userId);
       return Response.json({ data: filterJobs }, { status: 200 });
     }
 
@@ -61,6 +63,11 @@ export async function POST(req: NextRequest) {
 
     job.skills.forEach(async (skill) => {
       await TestModel.generate({ category: skill, position }, job._id);
+    });
+
+    const user: IUser = await UserModel.findById(userId.toString());
+    await UserModel.where("_id", userId).update({
+      quota: user.quota - 1,
     });
 
     return Response.json({ response: job }, { status: 201 });

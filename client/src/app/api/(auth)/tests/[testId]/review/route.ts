@@ -45,12 +45,12 @@ export async function POST(req: Request, { params }: Params) {
       const { _id, correctness, feedback } = reviews[i];
 
       await QuestionModel.where("_id", _id).update({
-        correctness,
+        correctness: Number(correctness),
         feedback,
       });
     }
 
-    await TestModel.where("_id", testId).update({ score, summary });
+    await TestModel.where("_id", testId).update({ score: Number(score), summary, isReviewed: true });
 
     return Response.json({ response: responseOpenAI }, { status: 200 });
   } catch (err) {

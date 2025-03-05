@@ -5,9 +5,6 @@ import { IUser } from "@/interfaces/IUser";
 import { initiateMidtrans } from "@/services/midtrans/initiateMidtrans";
 import { ObjectId } from "mongodb";
 
-export type Params = {
-  params: Promise<{ testId: string }>;
-};
 export async function POST(req: Request) {
   try {
     const body = await req.json();
@@ -27,6 +24,7 @@ export async function POST(req: Request) {
       amount: body.package.price,
       quota: body.package.quota,
       status: "Pending",
+      redirectUrl: response.redirectUrl,
       createdAt: new Date(),
       updatedAt: new Date(),
     });

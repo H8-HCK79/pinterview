@@ -7,6 +7,19 @@ export interface ITransaction {
   amount: number;
   quota: number;
   status: string;
+  redirectUrl: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ITransactionClient {
+  _id: string;
+  userId: string;
+  orderId: string;
+  amount: number;
+  quota: number;
+  status: string;
+  redirectUrl: string;
   createdAt: string;
   updatedAt: string;
 }

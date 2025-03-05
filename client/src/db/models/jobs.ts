@@ -25,7 +25,9 @@ export default class JobModel extends Mongoloquent {
 
   static async fetchAllByUserId(userId: string) {
     try {
-      const jobs = await JobModel.where("userId", new ObjectId(userId)).get();
+      const jobs = await JobModel.where("userId", new ObjectId(userId))
+        .orderBy("createdAt", "desc")
+        .get();
 
       return jobs;
     } catch (error) {
@@ -44,7 +46,7 @@ export default class JobModel extends Mongoloquent {
       // your relationship data can accessed in the data property
       console.log(job.data);
 
-      return job.data;
+      return job.data as IJob
     } catch (error) {
       throw error;
     }
@@ -56,7 +58,7 @@ export default class JobModel extends Mongoloquent {
         throw new Error(payload);
       }
 
-      const { company, position, description, skills, requirements } =
+      const { company, position, description, skills, requirements, projects } =
         payload.job;
       const newJob = {
         userId: new ObjectId(userId),
@@ -67,6 +69,7 @@ export default class JobModel extends Mongoloquent {
         requirements,
         status: "Ready to apply",
         readiness: 0,
+        projects,
         createdAt: new Date(),
         updatedAt: new Date(),
       };
@@ -81,6 +84,7 @@ export default class JobModel extends Mongoloquent {
     try {
       const filterJob = await JobModel.where("status", status)
         .where("userId", new ObjectId(userId))
+        .orderBy("createdAt", "desc")
         .get();
       //kalo pakai first baru data ny berupa objek
       return filterJob;
@@ -88,9 +92,9 @@ export default class JobModel extends Mongoloquent {
       throw error;
     }
   }
-  static async patchJobStatus(jobId: string, status: string) {
+  static async updateStatus(jobId: string, status: string) {
     try {
-      const job = (await JobModel.where("_id", jobId).update({
+      const job = (await JobModel.where("_id", new ObjectId(jobId)).update({
         status,
       })) as IJob;
       return job;
@@ -99,11 +103,11 @@ export default class JobModel extends Mongoloquent {
     }
   }
 
-  static async deleteJob(id: string) {
+  static async deleteJob(jobId: string) {
     try {
-      await JobModel.where("_id", id).where("status", "rejected").delete();
+      await JobModel.where("_id", new ObjectId(jobId)).delete();
 
-      return ` You sucessfully delete a job`;
+      return `Job has been deleted`;
     } catch (error) {
       throw error;
     }

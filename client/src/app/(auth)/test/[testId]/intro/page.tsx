@@ -30,7 +30,10 @@ export default function IntroPage() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
+    <div className="flex min-h-screen w-full items-center justify-center bg-gradient-to-r from-[#0077b6] to-[#023e8a]">
+      <div className="absolute top-10 right-10 w-32 h-32 bg-white/10 rounded-full"></div>
+      <div className="absolute bottom-20 left-10 w-40 h-40 bg-blue-300/10 rounded-full"></div>
+      
       <div className="max-w-2xl w-full bg-white shadow-lg p-6 rounded-2xl">
         <h1 className="text-2xl font-bold text-center text-gray-900">
           Welcome to the Test
