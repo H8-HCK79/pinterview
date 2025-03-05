@@ -3,6 +3,7 @@ import UserModel from "@/db/models/users";
 import { ITransaction } from "@/interfaces/ITransaction";
 import { IUser } from "@/interfaces/IUser";
 import { sha512 } from "sha512-crypt-ts";
+import { createHash } from "node:crypto";
 
 export type Params = {
   params: Promise<{ testId: string }>;
@@ -25,19 +26,21 @@ export async function POST(req: Request) {
 
     // SHA512(order_id + status_code + gross_amount + ServerKey);
 
-    const key = sha512.crypt(
-      order.orderId +
-        status_code +
-        `${order.amount}.00` +
-        process.env.MIDTRANS_SERVER_KEY,
-      ""
-    );
-    console.log(
-      order.orderId,
-      status_code,
-      order.amount,
-      process.env.MIDTRANS_SERVER_KEY
-    );
+    const key = createHash("sha512")
+      .update(
+        order.orderId +
+          status_code +
+          `${order.amount}.00` +
+          process.env.MIDTRANS_SERVER_KEY
+      )
+      .digest("hex");
+
+    // console.log(
+    //   order.orderId,
+    //   status_code,
+    //   order.amount,
+    //   process.env.MIDTRANS_SERVER_KEY
+    // );
 
     console.log(key, "KEY");
     console.log(signature_key, "SIGNATUREKEY");

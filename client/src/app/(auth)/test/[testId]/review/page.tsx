@@ -32,6 +32,7 @@ export default function ReviewPage() {
       );
       if (!res.ok) throw new Error("Failed to fetch review data.");
       const data = await res.json();
+      
       setReviewData(data.data);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unknown error");

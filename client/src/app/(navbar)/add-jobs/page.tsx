@@ -4,6 +4,7 @@ import { LinkPreview } from "@/components/ui/link-preview";
 import { PlusCircle, Briefcase, Building, FileText } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useUser } from "@/context/UserContext";
 
 type Platforms = {
   name: string;
@@ -45,17 +46,30 @@ export default function AddJobs() {
   const [position, setPosition] = useState("");
   const [company, setCompany] = useState("");
   const [rawDescription, setRawDescription] = useState("");
+  const [error, setError] = useState<string>("");
+  const { user, fetchUser } = useUser(); // Get user context
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/jobs`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/jobs`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ position, company, rawDescription }),
       });
+
+      if (!res.ok) {
+        throw new Error((await res.json()).error);
+      }
+      await fetchUser();
+
       router.push("/jobs");
-    } catch (error) {
+    } catch (error: unknown) {
       console.log(error, "<== handle submit job");
+
+      if (error instanceof Error) {
+        setError(error.message);
+      }
     }
   };
   // console.log(role, company, rawDescription);
@@ -76,6 +90,14 @@ export default function AddJobs() {
           <h2 className="text-xl font-bold  text-center mt-4">
             Add a Job Listing
           </h2>
+
+          {error ? (
+            <div role="alert" className="alert alert-error my-4 h-10 flex">
+              <span>{error}</span>
+            </div>
+          ) : (
+            ""
+          )}
 
           <form onSubmit={handleSubmit} className="space-y-2">
             <div className="group">

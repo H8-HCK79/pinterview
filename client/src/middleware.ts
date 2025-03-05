@@ -11,7 +11,7 @@ export async function middleware(request: NextRequest) {
     if (
       path.includes("/api/profile") ||
       path.includes("/api/jobs") ||
-      path.includes("/api/midtrans/initiate")
+      path.includes("/api/midtrans")
     ) {
       console.log("========== MIDDLEWARE ==========");
       const secret = new TextEncoder().encode(process.env.JWT_SECRET);

@@ -23,7 +23,7 @@ export async function reviewTestAI(
       {
         role: "system",
         content: `
-  You are a strict interviewer reviewing test answers.
+  You are a rational interviewer reviewing test answers.
   For each question, assess if the provided answer (from user) fully matches the expectedAnswer.
   If it's a concept question, determine if the answer is fully or partially fits the key points in expectedAnswer.
   If it's a technical question, evaluate the correctness of the code answer.

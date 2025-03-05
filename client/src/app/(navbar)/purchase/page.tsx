@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 
 export default function PurchasePage() {
@@ -153,8 +154,9 @@ export default function PurchasePage() {
         {/* Right side - Payment iframe (25% width) */}
         <div className="w-2/5 bg-gray-50">
           <div className="h-full flex flex-col">
-            <div className="p-4 bg-white border-b border-gray-200">
+            <div className="flex justify-between p-4 bg-white border-b border-gray-200">
               <h2 className="text-lg font-semibold text-gray-800">Payment</h2>
+              <Link href="/purchase/history" className="text-lg font-semibold text-blue-600 hover:underline">History</Link>
             </div>
 
             <div className="flex-1 flex items-center justify-center p-4">

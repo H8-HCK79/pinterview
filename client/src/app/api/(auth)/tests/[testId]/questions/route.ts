@@ -50,6 +50,7 @@ export async function POST(req: Request, { params }: Params) {
     }
 
     let questions = await QuestionModel.generateMany(responseOpenAI, testId);
+    await TestModel.where("_id", testId).update({isGenerated: true})
 
     return Response.json({ response: questions }, { status: 201 });
   } catch (err) {

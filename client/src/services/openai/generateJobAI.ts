@@ -31,10 +31,14 @@ export async function generateJobAI(
           "description": "Short summary of the job", //summerize by you
           "skills": ["skil 1", "skill 2"] // filter by you like Javascript, PostgreSQL, React, etc that will be tested by concept and technical/coding
           "requirements": ["requirement 1", "requirement 2"] // filter by you like Bachelor's Degree in Computer Science, 1+ years experience, etc
+          "projects": [
+            {
+              "name": "project name", // must be relevant based on job desc and user position (for the scope of the project)
+              "isCompleted": false
+            }
+            ... //total 3 generated projects
+          ] 
         },
-        todo: {
-          "": ""
-        }
       }
 
       Return **only** the JSON array and nothing else. No explanations, no additional text.`,
