@@ -168,6 +168,7 @@ export default function AddJobs() {
               <LinkPreview
                 url={platform.url}
                 key={index}
+  
                 className="flex items-center border p-3 rounded-xl shadow-lg w-fit"
               >
                 <Image

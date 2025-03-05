@@ -23,14 +23,12 @@ import RadarChart from "@/components/radar-chart";
 import { useParams, useRouter } from "next/navigation";
 import type { IAggregatedJob } from "@/interfaces/IJob";
 import Link from "next/link";
-import { StatusBadge } from "@/components/ui/JobsCard";
 import {
   ArrowLeft,
   Briefcase,
   Circle,
   ClipboardList,
   GraduationCap,
-  MapPin,
   Trash,
 } from "lucide-react";
 
@@ -149,7 +147,7 @@ export default function JobDetailsPage() {
   return (
     <div className="flex w-full bg-gray-50">
       {/* Left Panel (Fixed) */}
-      <div className="lg:w-1/2 h-[calc(100vh-64px)] overflow-hidden bg-gradient-to-br from-[#0077b6] to-[#023e8a] p-8 lg:p-12 relative sticky top-[64px]">
+      <div className="lg:w-1/2 h-[calc(100vh-64px)] overflow-y-auto bg-gradient-to-br from-[#0077b6] to-[#023e8a] p-8 lg:p-12 relative sticky top-[64px]">
         {/* Decorative elements */}
         <div className="absolute top-20 right-10 w-64 h-64 bg-white/5 rounded-full blur-3xl"></div>
         <div className="absolute bottom-20 left-10 w-80 h-80 bg-blue-300/10 rounded-full blur-2xl"></div>
