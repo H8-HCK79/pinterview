@@ -4,10 +4,9 @@ import { useRef, useEffect } from "react";
 
 interface RadarChartProps {
   data: Record<string, number>;
-  skillName: string;
 }
 
-export default function RadarChart({ data, skillName }: RadarChartProps) {
+export default function RadarChart({ data }: RadarChartProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {

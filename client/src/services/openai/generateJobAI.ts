@@ -33,7 +33,7 @@ export async function generateJobAI(
           "requirements": ["requirement 1", "requirement 2"] // filter by you like Bachelor's Degree in Computer Science, 1+ years experience, etc
           "projects": [
             {
-              "name": "project name", // must be relevant based on job desc and user position (for the scope of the project)
+              "name": "project name", // your generate must be specific theme and relevant based on job desc and user position (for the scope of the project)
               "isCompleted": false
             }
             ... //total 3 generated projects

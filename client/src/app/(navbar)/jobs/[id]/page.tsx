@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/dialog";
 import RadarChart from "@/components/radar-chart";
 import { useParams, useRouter } from "next/navigation";
-import type { IAggregatedJob } from "@/interfaces/IJob";
+import type { IAggregatedJob, IProject } from "@/interfaces/IJob";
 import Link from "next/link";
 import { StatusBadge } from "@/components/ui/JobsCard";
 import {
@@ -30,7 +30,7 @@ import {
   Circle,
   ClipboardList,
   GraduationCap,
-  MapPin,
+  ListTodoIcon,
   Trash,
 } from "lucide-react";
 
@@ -67,16 +67,12 @@ export default function JobDetailsPage() {
   const { id } = params;
   const [job, setJob] = useState<IAggregatedJob | null>(null);
   const [error, setError] = useState<string>("");
-  const [selectedSkill, setSelectedSkill] = useState<string>("React");
-  const [toDoList, setToDoList] = useState<
-    {
-      name: string;
-      isCompleted: string;
-    }[]
-  >([]);
+  const [projects, setProjects] = useState<IProject[]>([]);
   const [selectedStatus, setSelectedStatus] = useState("Ready to apply");
 
-  const handleChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleChangeStatus = async (
+    e: React.ChangeEvent<HTMLSelectElement>
+  ) => {
     const newStatus = e.target.value;
     setSelectedStatus(newStatus); // Update state first
 
@@ -87,15 +83,47 @@ export default function JobDetailsPage() {
     });
   };
 
+  const handleChangeProjects = async (projectIndex: number) => {
+    try {
+      // Toggle the completion status of the project at the given index
+      const updatedProjects = projects.map((project, index) =>
+        index === projectIndex
+          ? { ...project, isCompleted: !project.isCompleted }
+          : project
+      );
+
+      setProjects(updatedProjects); // Update UI state
+
+      // Send the updated projects array to the backend
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/jobs/${id}/projects`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ projects: updatedProjects }),
+        }
+      );
+      if (!res.ok) {
+        throw res;
+      }
+      console.log(updatedProjects, "<<< ok updatedProjects");
+    } catch (error) {
+      console.log(error, "<<< err handleChangeProjects");
+    }
+  };
+
   const handleDelete = async () => {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/jobs/${id}`, {
-        method: "DELETE",
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/jobs/${id}`,
+        {
+          method: "DELETE",
+        }
+      );
       if (!res.ok) {
         throw new Error((await res.json()).error);
       }
-      router.push("/jobs")
+      router.push("/jobs");
     } catch (error: unknown) {
       console.log(error, "<<< err handleDelete");
       if (error instanceof Error) {
@@ -121,7 +149,7 @@ export default function JobDetailsPage() {
 
         // Update selectedStatus with job.status from backend
         setSelectedStatus(data.status);
-        setToDoList(data.projects);
+        setProjects(data.projects);
       } catch (error) {
         console.error("Error fetching job data:", error);
       }
@@ -149,7 +177,7 @@ export default function JobDetailsPage() {
   return (
     <div className="flex w-full bg-gray-50">
       {/* Left Panel (Fixed) */}
-      <div className="lg:w-1/2 h-[calc(100vh-64px)] overflow-hidden bg-gradient-to-br from-[#0077b6] to-[#023e8a] p-8 lg:p-12 relative sticky top-[64px]">
+      <div className="lg:w-1/2 h-[calc(100vh-64px)] overflow-y-auto bg-gradient-to-br from-[#0077b6] to-[#023e8a] p-8 lg:p-12 relative sticky top-[64px]">
         {/* Decorative elements */}
         <div className="absolute top-20 right-10 w-64 h-64 bg-white/5 rounded-full blur-3xl"></div>
         <div className="absolute bottom-20 left-10 w-80 h-80 bg-blue-300/10 rounded-full blur-2xl"></div>
@@ -186,7 +214,7 @@ export default function JobDetailsPage() {
               <select
                 className={`w-full border-gray-300 rounded-lg p-2 ${selectedOption?.color}`}
                 value={selectedStatus}
-                onChange={handleChange}
+                onChange={handleChangeStatus}
               >
                 {statusOptions.map((option) => (
                   <option key={option.value} value={option.value}>
@@ -226,19 +254,28 @@ export default function JobDetailsPage() {
             {/* To-Do List */}
             <div className="mt-8 bg-white/10 p-5 rounded-xl">
               <h3 className="text-xl font-semibold flex items-center mb-4">
-                <GraduationCap className="h-5 w-5 mr-2" />
+                <ListTodoIcon className="h-5 w-5 mr-2" />
                 Preparation Projects
               </h3>
               <ul className="space-y-3">
-                {toDoList.map((project, i) => (
+                {projects.map((project, index) => (
                   <li
-                    key={i}
+                    key={index}
                     className="flex items-center gap-3 p-2 hover:bg-white/10 rounded-lg transition-colors"
                   >
-                    <div className="flex-shrink-0">
-                      <Circle className="h-5 w-5 text-white/70" />
-                    </div>
-                    <span className="text-white/90">{project.name}</span>
+                    <input
+                      type="checkbox"
+                      className="h-5 w-5 accent-blue-500"
+                      checked={project.isCompleted ?? false} // Assuming completed is a new boolean field
+                      onChange={() => handleChangeProjects(index)}
+                    />
+                    <span
+                      className={`text-white/90 ${
+                        project.isCompleted ? "line-through opacity-70" : ""
+                      }`}
+                    >
+                      {project.name}
+                    </span>
                   </li>
                 ))}
               </ul>
@@ -269,12 +306,20 @@ export default function JobDetailsPage() {
                   >
                     <AccordionTrigger className="px-4 py-3 hover:bg-gray-50">
                       <Link
-                        href={`/test/${test._id}/intro`}
+                        href={`${
+                          test.isGenerated === true
+                            ? `/test/${test._id}/review`
+                            : `/test/${test._id}/intro`
+                        }`}
                         className="flex items-center"
                       >
                         <Badge
                           variant="secondary"
-                          className="px-4 py-2 text-base cursor-pointer bg-blue-50 text-blue-700 hover:bg-blue-100"
+                          className={`px-4 py-2 text-base cursor-pointer ${
+                            test.isGenerated === true
+                              ? "bg-red-50 text-red-700 hover:bg-red-100"
+                              : "bg-blue-50 text-blue-700 hover:bg-blue-100"
+                          }`}
                         >
                           {test.category}
                         </Badge>
@@ -345,7 +390,7 @@ export default function JobDetailsPage() {
               </Dialog>
 
               <div className="h-64 flex justify-center items-center mt-8 bg-gray-50 rounded-xl p-4">
-                <RadarChart data={chartedTests} skillName={selectedSkill} />
+                <RadarChart data={chartedTests} />
               </div>
             </div>
           </Card>

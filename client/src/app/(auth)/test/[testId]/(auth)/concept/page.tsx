@@ -5,6 +5,8 @@ import { useParams, useRouter } from "next/navigation";
 import { IQuestion } from "@/interfaces/IQuestion";
 import { useAnswerContext } from "@/context/AnswerContext";
 import useSpeechRecognition from "@/hooks/useSpeechRecognition";
+import { CountdownCircleTimer } from "react-countdown-circle-timer";
+import { useSecondsContext } from "@/context/SecondsContext";
 
 export default function ConceptTestPage() {
   const params = useParams();
@@ -19,6 +21,8 @@ export default function ConceptTestPage() {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [userAnswer, setUserAnswer] = useState("");
 
+  const { seconds, setSeconds, isPlaying, setIsPlaying } = useSecondsContext();
+
   console.log(answers);
 
   const {
@@ -28,6 +32,13 @@ export default function ConceptTestPage() {
     isListening,
     hasRecognitionSupport,
   } = useSpeechRecognition();
+
+  const savedPlaying = localStorage.getItem("is_playing");
+  useEffect(() => {
+    if (savedPlaying === "false") {
+      router.push(`/test/${testId}/review`);
+    }
+  }, []);
 
   useEffect(() => {
     async function fetchConceptQuestions() {
@@ -96,13 +107,16 @@ export default function ConceptTestPage() {
 
   const handleConfirmNextPage = async () => {
     setShowConfirmation(false);
-    await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/tests/${testId}/questions`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ answers }),
-    });
+    await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/tests/${testId}/questions`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ answers }),
+      }
+    );
     router.push(`/test/${testId}/technical`);
   };
 
@@ -117,6 +131,44 @@ export default function ConceptTestPage() {
       startListening();
     }
   };
+
+  // Load `seconds` and `isPlaying` from localStorage on mount
+  useEffect(() => {
+    const savedSeconds = localStorage.getItem("remaining_seconds");
+    const savedPlaying = localStorage.getItem("is_playing");
+
+    if (savedSeconds) {
+      setSeconds(parseInt(savedSeconds, 10));
+    }
+    if (savedPlaying === "true") {
+      setIsPlaying(true);
+    }
+  }, []);
+
+  // Save `seconds` & `isPlaying` to localStorage every second
+  useEffect(() => {
+    localStorage.setItem("remaining_seconds", seconds.toString());
+    localStorage.setItem("is_playing", isPlaying.toString());
+  }, [seconds, isPlaying]);
+
+  // Countdown timer
+  useEffect(() => {
+    if (!isPlaying || seconds <= 0) return;
+
+    const timer = setInterval(() => {
+      setSeconds((prev) => (prev > 0 ? prev - 1 : 0));
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [isPlaying, seconds]);
+
+  // Redirect when timer hits 0
+  useEffect(() => {
+    if (seconds <= 0 && isPlaying) {
+      setIsPlaying(false);
+      router.push(`/test/${testId}/review`);
+    }
+  }, [seconds, isPlaying, router]);
 
   if (!conceptQuestions.length) return <div>Loading...</div>;
 
@@ -144,7 +196,7 @@ export default function ConceptTestPage() {
             <div className="relative min-h-64 mb-4">
               <div className="absolute left-0 top-5 max-w-[70%]">
                 <div className="bg-gray-200 px-4 py-2 rounded-lg text-gray-800">
-                  <p className="font-medium">AI QUESTION</p>
+                  <p className="font-medium">Interviewer Question:</p>
                   <p>{conceptQuestions[currentQuestionIndex]?.question}</p>
                 </div>
               </div>
@@ -212,11 +264,18 @@ export default function ConceptTestPage() {
         </button>
       </div>
 
+      <div className="flex items-center justify-center h-screen bg-gray-900">
+        <h1 className="text-white text-6xl font-bold bg-gray-800 px-8 py-4 rounded-2xl shadow-lg">
+          Time Left: <span className="text-red-400">{seconds}s</span>
+        </h1>
+      </div>
+
       {showConfirmation && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded-lg shadow-lg text-center">
             <p className="text-lg font-semibold mb-4">
-              You have completed all concept questions. Proceed to the Technical Test?
+              You have completed all concept questions. Proceed to the Technical
+              Test?
             </p>
             <div className="flex justify-center space-x-4">
               <button

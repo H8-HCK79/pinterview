@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useParams } from "next/navigation";
+import Link from "next/link";
 
 interface IReviewItem {
   _id: string;
@@ -21,6 +22,13 @@ export default function ReviewPage() {
   const [reviewData, setReviewData] = useState<IReviewItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  
+  const savedPlaying = localStorage.getItem("is_playing");
+  useEffect(() => {
+    if (savedPlaying === "true") {
+      router.push(`/test/${testId}/technical`);
+    }
+  }, []);
 
   const fetchReviewData = async () => {
     if (!testId) return;
@@ -32,7 +40,7 @@ export default function ReviewPage() {
       );
       if (!res.ok) throw new Error("Failed to fetch review data.");
       const data = await res.json();
-      
+
       setReviewData(data.data);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unknown error");
@@ -101,12 +109,25 @@ export default function ReviewPage() {
           Review Page
         </h1>
 
-        <button
-          onClick={handleSubmitReview}
-          className="mb-8 px-6 py-3 bg-white text-blue-700 rounded-lg hover:bg-blue-50 transition-colors duration-200 font-semibold shadow-lg mx-auto block"
-        >
-          Submit Review
-        </button>
+        <div className="flex justify-center items-center gap-4 mb-8">
+          {reviewData[0]?.correctness === 0 ? (
+            <button
+              onClick={handleSubmitReview}
+              className="px-6 py-3 bg-white text-blue-700 rounded-lg hover:bg-blue-50 transition-colors duration-200 font-semibold shadow-lg"
+            >
+              Submit Review
+            </button>
+          ) : (
+            ""
+          )}
+
+          <Link
+            href="/jobs"
+            className="inline-flex items-center px-4 py-2 bg-white text-blue-700 hover:bg-blue-50 rounded-lg shadow-md transition"
+          >
+            Back →
+          </Link>
+        </div>
 
         <div className="w-full bg-white/90 backdrop-blur-sm p-8 rounded-xl shadow-xl">
           {reviewData.length === 0 ? (
@@ -145,7 +166,8 @@ export default function ReviewPage() {
                           : "bg-red-100 text-red-700"
                       } font-medium inline-block`}
                     >
-                      Correctness: <h1 className="text-center">{item.correctness}</h1>
+                      Correctness:{" "}
+                      <h1 className="text-center">{item.correctness}</h1>
                     </div>
                     <div className="flex-1 p-3 bg-gray-50 rounded-lg">
                       <p className="text-gray-700 font-medium">Feedback:</p>

@@ -1,4 +1,4 @@
-import { IJob, IJobResponseAI, JobInput } from "@/interfaces/IJob";
+import { IJob, IJobResponseAI, IProject, JobInput } from "@/interfaces/IJob";
 import { ObjectId } from "mongodb";
 import { Mongoloquent } from "mongoloquent";
 import { z } from "zod";
@@ -46,7 +46,7 @@ export default class JobModel extends Mongoloquent {
       // your relationship data can accessed in the data property
       console.log(job.data);
 
-      return job.data as IJob
+      return job.data as IJob;
     } catch (error) {
       throw error;
     }
@@ -96,6 +96,17 @@ export default class JobModel extends Mongoloquent {
     try {
       const job = (await JobModel.where("_id", new ObjectId(jobId)).update({
         status,
+      })) as IJob;
+      return job;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  static async updateProjects(jobId: string, projects: IProject[]) {
+    try {
+      const job = (await JobModel.where("_id", new ObjectId(jobId)).update({
+        projects,
       })) as IJob;
       return job;
     } catch (error) {
