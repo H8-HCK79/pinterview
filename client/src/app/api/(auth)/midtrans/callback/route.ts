@@ -2,7 +2,6 @@ import TransactionModel from "@/db/models/transaction";
 import UserModel from "@/db/models/users";
 import { ITransaction } from "@/interfaces/ITransaction";
 import { IUser } from "@/interfaces/IUser";
-import { sha512 } from "sha512-crypt-ts";
 import { createHash } from "node:crypto";
 
 export type Params = {
@@ -11,7 +10,8 @@ export type Params = {
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { status_code, order_id, gross_amount, signature_key } = body;
+    const { status_code, order_id, signature_key } = body;
+    // missed gross_amount
 
     const { data: order } = (await TransactionModel.where(
       "orderId",

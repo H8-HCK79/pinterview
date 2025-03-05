@@ -1,6 +1,5 @@
 import TransactionModel from "@/db/models/transaction";
 import UserModel from "@/db/models/users";
-import { IPackage } from "@/interfaces/ITransaction";
 import { IUser } from "@/interfaces/IUser";
 import { initiateMidtrans } from "@/services/midtrans/initiateMidtrans";
 import { ObjectId } from "mongodb";

@@ -26,7 +26,6 @@ import Link from "next/link";
 import {
   ArrowLeft,
   Briefcase,
-  Circle,
   ClipboardList,
   GraduationCap,
   ListTodoIcon,

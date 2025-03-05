@@ -1,14 +1,13 @@
-import { IJob, IJobResponseAI, IProject, JobInput } from "@/interfaces/IJob";
+import { IJob, IJobResponseAI, IProject } from "@/interfaces/IJob";
 import { ObjectId } from "mongodb";
 import { Mongoloquent } from "mongoloquent";
-import { z } from "zod";
 import TestModel from "./tests";
 
-const jobSchema = z.object({
-  company: z.string({ message: "Company name is required" }),
-  position: z.string({ message: "Position of the job is required" }),
-  rawDescription: z.string({ message: "Raw description is required" }),
-});
+// const jobSchema = z.object({
+//   company: z.string({ message: "Company name is required" }),
+//   position: z.string({ message: "Position of the job is required" }),
+//   rawDescription: z.string({ message: "Raw description is required" }),
+// });
 
 export default class JobModel extends Mongoloquent {
   static collection = "jobs";

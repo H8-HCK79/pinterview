@@ -1,8 +1,4 @@
 import QuestionModel from "@/db/models/questions";
-import TestModel from "@/db/models/tests";
-import { IQuestion } from "@/interfaces/IQuestion";
-import { ITest } from "@/interfaces/ITest";
-import { generateQuestionsAI } from "@/services/openai/generateQuestionsAI";
 import { NextRequest } from "next/server";
 
 export type Params = {

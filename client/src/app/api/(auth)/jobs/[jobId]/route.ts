@@ -1,5 +1,4 @@
 import JobModel from "@/db/models/jobs";
-import { IJob } from "@/interfaces/IJob";
 import { ZodError } from "zod";
 
 export type Params = {

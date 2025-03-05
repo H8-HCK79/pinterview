@@ -14,24 +14,25 @@ export default function IntroPage() {
 
   const savedPlaying = localStorage.getItem("is_playing");
   if (savedPlaying === "true") {
-    redirect(`/test/${testId}/concept`)
+    localStorage.setItem("is_playing", "true");
+    redirect(`/test/${testId}/concept`);
   }
 
   const handleGenerateQuestions = async () => {
     try {
-      // const res = await fetch(
-      //   `${process.env.NEXT_PUBLIC_BASE_URL}/tests/${testId}/questions`,
-      //   {
-      //     method: "POST",
-      //   }
-      // );
-      // if (!res.ok) {
-      //   throw res;
-      // }
-      // console.log(res, "<<< ok handleGenerateQuestions");
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/tests/${testId}/questions`,
+        {
+          method: "POST",
+        }
+      );
+      if (!res.ok) {
+        throw res;
+      }
+      console.log(res, "<<< ok handleGenerateQuestions");
 
       // put the context here and start the timer
-      setSeconds(20); // Reset the timer
+      setSeconds(1800); // Reset the timer
       setIsPlaying(true); // Start the timer
 
       router.push(`/test/${testId}/concept`);
@@ -57,6 +58,7 @@ export default function IntroPage() {
           {[
             "Ensure a stable internet connection.",
             "No switching tabs during the test.",
+            "Or else you will be punished from the test.",
             "Answer honestly without external help.",
             "Time is limited, manage it wisely.",
           ].map((rule, index) => (

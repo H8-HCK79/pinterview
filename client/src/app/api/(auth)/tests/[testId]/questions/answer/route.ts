@@ -1,5 +1,4 @@
 import QuestionModel from "@/db/models/questions";
-import TestModel from "@/db/models/tests";
 import { IQuestion } from "@/interfaces/IQuestion";
 import { answerTestAI } from "@/services/openai/answerTestAI";
 

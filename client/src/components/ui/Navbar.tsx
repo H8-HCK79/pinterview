@@ -1,13 +1,12 @@
 "use client";
 
 import { useUser } from "@/context/UserContext";
-import { useState } from "react";
 import { LogOut, LogIn, User, CreditCard } from "lucide-react";
 import Link from "next/link";
 import { logoutUser } from "@/app/(sign)/actions";
 
 export default function Navbar() {
-  const { user, fetchUser } = useUser(); // Get fetchUser from context
+  const { user } = useUser(); // Get fetchUser from context
 
   return (
     <nav className="bg-white shadow-md w-full z-20 sticky top-0 h-[10%] left-0">

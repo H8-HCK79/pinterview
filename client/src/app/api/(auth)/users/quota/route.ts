@@ -15,6 +15,7 @@ export async function POST(req: Request) {
 
     return Response.json({ message: "Quota added successful" }, { status: 200 });
   } catch (err) {
+    console.log(err, "<<< quota")
     return Response.json({ message: "Internal server error" }, { status: 500 });
   }
 }

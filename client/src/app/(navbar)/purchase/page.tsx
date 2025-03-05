@@ -156,7 +156,12 @@ export default function PurchasePage() {
           <div className="h-full flex flex-col">
             <div className="flex justify-between p-4 bg-white border-b border-gray-200">
               <h2 className="text-lg font-semibold text-gray-800">Payment</h2>
-              <Link href="/purchase/history" className="text-lg font-semibold text-blue-600 hover:underline">History</Link>
+              <Link
+                href="/purchase/history"
+                className="text-lg font-semibold text-blue-600 hover:underline"
+              >
+                History
+              </Link>
             </div>
 
             <div className="flex-1 flex items-center justify-center p-4">
@@ -185,7 +190,7 @@ export default function PurchasePage() {
                         </p>
                       </div>
                       <p className="mt-4">
-                        Click "Proceed to Payment" to continue
+                        Click &quot;Proceed to Payment&quot; to continue
                       </p>
                     </div>
                   ) : (

@@ -105,7 +105,7 @@ export default function Home() {
                   </h3>
                   <p className="text-gray-600 dark:text-gray-300 mb-4">
                     Pinterview was developed as a final project by the talented
-                    students of Hacktiv8's HCK 79 cohort. Our mission was to
+                    students of Hacktiv8&lsquo;s HCK 79 cohort. Our mission was to
                     create a comprehensive platform that helps developers
                     prepare for technical interviews and streamline their job
                     application process.

@@ -1,5 +1,4 @@
 import JobModel from "@/db/models/jobs";
-import QuestionModel from "@/db/models/questions";
 import TestModel from "@/db/models/tests";
 
 export type Params = {

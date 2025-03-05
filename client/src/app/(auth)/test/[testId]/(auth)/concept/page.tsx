@@ -1,11 +1,10 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { ArrowLeft, ArrowRight, Mic } from "lucide-react";
+import { ArrowLeft, ArrowRight, Loader2, Mic } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { IQuestion } from "@/interfaces/IQuestion";
 import { useAnswerContext } from "@/context/AnswerContext";
 import useSpeechRecognition from "@/hooks/useSpeechRecognition";
-import { CountdownCircleTimer } from "react-countdown-circle-timer";
 import { useSecondsContext } from "@/context/SecondsContext";
 
 export default function ConceptTestPage() {
@@ -170,7 +169,23 @@ export default function ConceptTestPage() {
     }
   }, [seconds, isPlaying, router]);
 
-  if (!conceptQuestions.length) return <div>Loading...</div>;
+  if (!conceptQuestions.length) {
+
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-background to-background/80">
+        <div className="flex flex-col items-center gap-4 text-center">
+          <Loader2 className="h-12 w-12 animate-spin text-primary" />
+          <h2 className="text-xl font-medium text-foreground sm:text-2xl">
+            Loading concept questions...
+          </h2>
+          <p className="text-sm text-muted-foreground">
+            Please wait while we prepare your next test
+          </p>
+        </div>
+      </div>
+    );
+  }
+
 
   return (
     <div className="flex min-h-screen w-full items-center justify-center bg-gradient-to-r from-[#0077b6] to-[#023e8a]">
@@ -264,9 +279,12 @@ export default function ConceptTestPage() {
         </button>
       </div>
 
-      <div className="flex items-center justify-center h-screen bg-gray-900">
-        <h1 className="text-white text-6xl font-bold bg-gray-800 px-8 py-4 rounded-2xl shadow-lg">
-          Time Left: <span className="text-red-400">{seconds}s</span>
+      <div className="rounded-lg bg-white px-4 py-2 shadow-md">
+        <h1 className="text-start font-mono text-2xl font-medium text-gray-900">
+          Time Left:
+          <span className="text-red-500">
+            {Math.floor(seconds / 60)}:{String(seconds % 60).padStart(2, "0")}
+          </span>
         </h1>
       </div>
 

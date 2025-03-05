@@ -39,7 +39,7 @@ export default class QuestionModel extends Mongoloquent {
 
   static async findConceptsByTestId(testId: string) {
     try {
-      let conceptQuestions: unknown = await QuestionModel.where(
+      const conceptQuestions: unknown = await QuestionModel.where(
         "testId",
         new ObjectId(testId)
       ).paginate(1, 5);
@@ -61,7 +61,7 @@ export default class QuestionModel extends Mongoloquent {
 
   static async findTechnicalsByTestId(testId: string) {
     try {
-      let technicalQuestions: unknown = await QuestionModel.where(
+      const technicalQuestions: unknown = await QuestionModel.where(
         "testId",
         new ObjectId(testId)
       ).paginate(2, 5);

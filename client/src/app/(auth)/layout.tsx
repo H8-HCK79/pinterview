@@ -2,7 +2,6 @@
 
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import Navbar from "@/components/ui/Navbar";
 export default async function Layout({
   children,
 }: Readonly<{
