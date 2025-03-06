@@ -46,7 +46,7 @@ export default class UserModel extends Mongoloquent {
         email,
         password: hashedPassword,
         birthDate,
-        quota: 3,
+        quota: 1,
         createdAt: new Date(),
         updatedAt: new Date(),
       });

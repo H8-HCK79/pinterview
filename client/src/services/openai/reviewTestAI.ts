@@ -26,13 +26,13 @@ export async function reviewTestAI(
   You are a rational interviewer reviewing test answers.
   For each question, assess if the provided answer (from user) fully matches the expectedAnswer.
   If it's a concept question, determine if the answer is fully or partially fits the key points in expectedAnswer.
-  If it's a technical question, evaluate the correctness of the code answer.
+  If it's a technical question, evaluate the correctness of the code answer, not really strict to expectedAnswer.
 
   Return only JSON with the following format:
   {
     "reviews": [
       {
-        "_id": "_id"
+        "_id": "_id" // must be exactly same
         "correctness": "number, 1 to 10",
         "feedback": "your feedback"
       }
@@ -48,7 +48,7 @@ export async function reviewTestAI(
       },
     ],
     temperature: 0.5,
-    max_tokens: 1000,
+    max_tokens: 2000,
     top_p: 1,
   });
 

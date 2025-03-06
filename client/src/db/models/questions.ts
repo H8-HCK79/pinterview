@@ -1,4 +1,4 @@
-import { IInterviewQuestion, IQuestion } from "@/interfaces/IQuestion";
+import { IFormattedQuestion, IInterviewQuestion, IQuestion } from "@/interfaces/IQuestion";
 import { ObjectId } from "mongodb";
 import { Mongoloquent } from "mongoloquent";
 
@@ -32,6 +32,18 @@ export default class QuestionModel extends Mongoloquent {
         new ObjectId(testId)
       ).get();
       return questions as IQuestion[];
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  static async findFormattedByTestId(testId: string) {
+    try {
+      const questions = await QuestionModel.where(
+        "testId",
+        new ObjectId(testId)
+      ).select(["_id", "type", "question"]).get();
+      return questions as IFormattedQuestion[];
     } catch (error) {
       throw error;
     }

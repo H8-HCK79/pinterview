@@ -33,7 +33,7 @@ export default function RadarChart({ data }: RadarChartProps) {
       const centerY = height / 2;
       const radius = Math.min(centerX, centerY) * 0.8;
 
-      // Draw the hexagon outline
+      // Draw the outer hexagon outline
       const categories = Object.keys(data);
       const angleStep = (Math.PI * 2) / categories.length;
 
@@ -59,7 +59,7 @@ export default function RadarChart({ data }: RadarChartProps) {
         const labelX = centerX + (radius + 20) * Math.cos(angle);
         const labelY = centerY + (radius + 20) * Math.sin(angle);
 
-        ctx.fillStyle = "#0077b6"; // Red color for labels
+        ctx.fillStyle = "#0077b6"; // Blue color for labels
         ctx.fillText(category, labelX, labelY);
       });
 
@@ -82,7 +82,7 @@ export default function RadarChart({ data }: RadarChartProps) {
         ctx.stroke();
       }
 
-      // Draw data polygon
+      // Draw data polygon (inner one) with 33% transparency
       ctx.beginPath();
       categories.forEach((category, i) => {
         const angle = i * angleStep - Math.PI / 2;
@@ -98,11 +98,11 @@ export default function RadarChart({ data }: RadarChartProps) {
       });
       ctx.closePath();
 
-      // Fill with semi-transparent green
-      ctx.fillStyle = "#0077b6";
+      // Fill data polygon with 33% transparent blue
+      ctx.fillStyle = "rgba(0, 119, 182, 0.33)";
       ctx.fill();
 
-      // Stroke the data polygon
+      // Stroke the data polygon (solid blue)
       ctx.strokeStyle = "#0077b6";
       ctx.lineWidth = 2;
       ctx.stroke();
@@ -115,12 +115,5 @@ export default function RadarChart({ data }: RadarChartProps) {
     requestAnimationFrame(animate);
   }, [data]);
 
-  return (
-    <canvas
-      ref={canvasRef}
-      width={300}
-      height={280}
-      
-    />
-  );
+  return <canvas ref={canvasRef} width={300} height={280} />;
 }

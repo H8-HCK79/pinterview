@@ -14,9 +14,14 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16">
           {/* Left Section - Logo & Navigation */}
           <div className="flex items-center gap-6">
-            <Link href="/">
-              <h1 className="text-2xl font-bold tracking-wide text-blue-500">
-                PINTERVIEW
+            <Link href="/" className="flex">
+              <img
+                src="/pinterview_logo.png"
+                alt="Pinterview Logo"
+                className=" object-contain w-10"
+              />
+              <h1 className="text-2xl font-bold tracking-wide text-blue-400 -ml-0.5">
+                INTERVIEW
               </h1>
             </Link>
             <div className="flex gap-4 text-gray-600 font-medium">

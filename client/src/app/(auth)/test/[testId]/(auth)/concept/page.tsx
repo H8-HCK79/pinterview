@@ -6,6 +6,8 @@ import { IQuestion } from "@/interfaces/IQuestion";
 import { useAnswerContext } from "@/context/AnswerContext";
 import useSpeechRecognition from "@/hooks/useSpeechRecognition";
 import { useSecondsContext } from "@/context/SecondsContext";
+import { ITest } from "@/interfaces/ITest";
+import DebugButton from "@/components/DebugButton";
 
 export default function ConceptTestPage() {
   const params = useParams();
@@ -169,8 +171,53 @@ export default function ConceptTestPage() {
     }
   }, [seconds, isPlaying, router]);
 
-  if (!conceptQuestions.length) {
+  const [category, setCategory] = useState<string>("");
+  useEffect(() => {
+    async function fetchCategory() {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/tests/${testId}`,
+        {
+          method: "GET",
+        }
+      );
+      const data: ITest = (await res.json()).data;
+      setCategory(data.category.toLowerCase());
+    }
+    fetchCategory();
+  }, []);
 
+  const handlePopulateConcepts = async () => {
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/tests/${testId}/concepts`
+      );
+      if (!res.ok) throw new Error("Failed to fetch");
+      const data: { data: IQuestion[] } = await res.json();
+      const formattedData = data.data.map((el) => ({
+        _id: el._id.toString(),
+        answer: el.answer,
+      }));
+
+      setAnswers(formattedData);
+    } catch (error) {
+      console.error("Error populating answers:", error);
+    }
+  };
+
+  const handleGenerateAnswers = async () => {
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/tests/${testId}/questions/answer`, {
+          method: "POST"
+        }
+      );
+      if (!res.ok) throw new Error("Failed to generate");
+    } catch (error) {
+      console.error("Error generating answers:", error);
+    }
+  };
+
+  if (!conceptQuestions.length) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-background to-background/80">
         <div className="flex flex-col items-center gap-4 text-center">
@@ -186,12 +233,13 @@ export default function ConceptTestPage() {
     );
   }
 
-
   return (
-    <div className="flex min-h-screen w-full items-center justify-center bg-gradient-to-r from-[#0077b6] to-[#023e8a]">
-      <div className="absolute top-10 right-10 w-32 h-32 bg-white/10 rounded-full"></div>
-      <div className="absolute bottom-20 left-10 w-40 h-40 bg-blue-300/10 rounded-full"></div>
-
+    <div className="min-h-screen flex items-center justify-center p-6 bg-gradient-to-br from-blue-500 to-blue-700 relative overflow-hidden">
+      {/* Decorative circles */}
+      <div className="absolute top-20 left-20 w-64 h-64 rounded-full bg-blue-400 opacity-20 blur-xl"></div>
+      <div className="absolute bottom-20 right-20 w-80 h-80 rounded-full bg-blue-300 opacity-20 blur-xl"></div>
+      <div className="absolute -top-10 right-40 w-40 h-40 rounded-full bg-blue-200 opacity-20 blur-lg"></div>
+      <div className="absolute -bottom-10 left-40 w-56 h-56 rounded-full bg-blue-600 opacity-20 blur-xl"></div>
       <div className="w-full max-w-2xl px-4 flex items-center justify-center">
         <button
           onClick={handlePrevQuestion}
@@ -218,48 +266,46 @@ export default function ConceptTestPage() {
 
               {userAnswer && (
                 <div className="absolute right-0 top-28 max-w-[70%]">
-                  <div className="bg-gray-200 px-4 py-2 rounded-lg text-gray-800">
+                  <div className="bg-gray-200 px-4 py-2 rounded-lg text-gray-800 max-h-40 overflow-y-auto">
                     <p className="font-medium">USER ANSWER</p>
                     <p>{userAnswer}</p>
                   </div>
                 </div>
               )}
-
-              <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2">
-                {hasRecognitionSupport ? (
-                  <button
-                    onClick={toggleMic}
-                    className={`p-3 rounded-full transition ${
-                      isListening
-                        ? "bg-red-400 hover:bg-red-500"
-                        : "bg-gray-300 hover:bg-gray-400"
-                    }`}
-                    aria-label={
-                      isListening ? "Stop listening" : "Start listening"
-                    }
-                  >
-                    <Mic size={20} color={isListening ? "white" : "black"} />
-                  </button>
-                ) : (
-                  <p className="text-sm text-red-500">
-                    Speech recognition not supported
-                  </p>
-                )}
-              </div>
             </div>
 
-            <div className="mb-4">
-              <textarea
-                className="w-full h-32 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder={
-                  isListening
-                    ? "Listening... Speak your answer"
-                    : "Type your answer here..."
-                }
-                value={userAnswer}
-                onChange={handleAnswerChange}
-                disabled={isListening}
-              />
+            <div className="mb-4 relative">
+              <div className="mt-12">
+                {" "}
+                {/* Add margin-top to push it down */}
+                <textarea
+                  className="w-full h-32 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder={
+                    isListening
+                      ? "Listening... Speak your answer"
+                      : "Type your answer here..."
+                  }
+                  value={userAnswer}
+                  onChange={handleAnswerChange}
+                  disabled={isListening}
+                />
+              </div>
+
+              {hasRecognitionSupport && (
+                <button
+                  onClick={toggleMic}
+                  className={`absolute top-3 left-1/2 transform -translate-x-1/2 p-3 rounded-full bg-opacity-50 transition z-10 ${
+                    isListening
+                      ? "bg-red-400 hover:bg-red-500"
+                      : "bg-gray-300 hover:bg-gray-400"
+                  }`}
+                  aria-label={
+                    isListening ? "Stop listening" : "Start listening"
+                  }
+                >
+                  <Mic size={20} color={isListening ? "white" : "black"} />
+                </button>
+              )}
             </div>
 
             <div className="text-center">
@@ -278,18 +324,25 @@ export default function ConceptTestPage() {
           <ArrowRight size={20} />
         </button>
       </div>
-
       <div className="rounded-lg bg-white px-4 py-2 shadow-md">
-        <h1 className="text-start font-mono text-2xl font-medium text-gray-900">
-          Time Left:
-          <span className="text-red-500">
-            {Math.floor(seconds / 60)}:{String(seconds % 60).padStart(2, "0")}
-          </span>
-        </h1>
+        <div className="rounded-lg bg-white px-4 py-2 shadow-md mb-4">
+          <h1 className="text-center font-bold text-blue-700 font-mono text-2xl">
+            Concept Test:
+          </h1>
+          <h1 className="text-center font-mono text-2xl font-medium text-gray-900">
+            {category.toUpperCase()}
+          </h1>
+          <h1 className="text-start font-mono text-2xl font-medium text-gray-900">
+            Time Left:
+            <span className="text-red-500">
+              {Math.floor(seconds / 60)}:{String(seconds % 60).padStart(2, "0")}
+            </span>
+          </h1>
+        </div>
       </div>
-
+      =
       {showConfirmation && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg text-center">
             <p className="text-lg font-semibold mb-4">
               You have completed all concept questions. Proceed to the Technical
@@ -312,6 +365,11 @@ export default function ConceptTestPage() {
           </div>
         </div>
       )}
+      <DebugButton
+        handlePopulateConcepts={handlePopulateConcepts}
+        handleGenerateAnswers={handleGenerateAnswers}
+      />
     </div>
   );
+
 }

@@ -1,40 +1,37 @@
 import QuestionModel from "@/db/models/questions";
-import { IQuestion } from "@/interfaces/IQuestion";
+import { IFormattedQuestion } from "@/interfaces/IQuestion";
 import { answerTestAI } from "@/services/openai/answerTestAI";
 
 export type Params = {
   params: Promise<{ testId: string }>;
 };
+
 export async function POST(req: Request, { params }: Params) {
   try {
     const { testId } = await params;
 
-    const questions: IQuestion[] = await QuestionModel.findAllByTestId(testId);
-    const formattedQuestions = questions.map((questionParent) => {
-      const { _id, type, question } = questionParent;
-      return {
-        _id,
-        type,
-        question,
-      };
-    });
+    // 1️⃣ Fetch all questions at once
+    const formattedQuestions: IFormattedQuestion[] =
+      await QuestionModel.findFormattedByTestId(testId);
 
+      console.log(formattedQuestions)
+
+    // 2️⃣ Call OpenAI (Streaming would be ideal, but Mongoloquent does not support async updates)
     const responseOpenAI = await answerTestAI(formattedQuestions);
     if (!responseOpenAI) {
       return Response.json(
-        { error: "Failed to generate test questions" },
+        { error: "Failed to generate test answers" },
         { status: 500 }
       );
     }
-    const { answers } = responseOpenAI;
 
-    for (let i = 0; i < answers.length; i++) {
-      const { _id, answer } = answers[i];
+    // 3️⃣ Prepare batch updates for Mongoloquent
+    const updatePromises = responseOpenAI.answers.map(({ _id, answer }) =>
+      QuestionModel.where("_id", _id).update({ answer })
+    );
 
-      await QuestionModel.where("_id", _id).update({
-        answer,
-      });
-    }
+    // 4️⃣ Execute updates in parallel (better performance)
+    await Promise.all(updatePromises);
 
     return Response.json({ response: responseOpenAI }, { status: 201 });
   } catch (err) {

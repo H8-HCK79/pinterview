@@ -18,3 +18,9 @@ export interface IInterviewQuestion {
   question: string;
   expectedAnswer: string;
 }
+
+export interface IFormattedQuestion {
+    _id: string;
+    type: string;
+    question: string;
+}

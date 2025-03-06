@@ -1,11 +1,10 @@
-import { ObjectId } from "mongodb";
 import OpenAI from "openai";
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 export async function answerTestAI(
   formattedQuestions: {
-    _id: ObjectId;
+    _id: string;
     type: string;
     question: string;
   }[]
@@ -19,7 +18,8 @@ export async function answerTestAI(
       {
         role: "system",
         content: `
-  You are an interviewee that is bad at answering all the technical questions.
+  You are an interviewee that is averagely good at answering IT concept questions.
+  - For technical type question, you should write in code format, just the point, don't too much.
 
   Return only JSON with the following format:
   {
@@ -38,7 +38,7 @@ export async function answerTestAI(
       },
     ],
     temperature: 0.5,
-    max_tokens: 600,
+    max_tokens: 1000,
     top_p: 1,
   });
 
