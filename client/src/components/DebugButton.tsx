@@ -47,28 +47,28 @@ export default function DebugButton({
         console.log("Populating concept answers...");
         if (handlePopulateConcepts) await handlePopulateConcepts();
         setButtonColor("bg-green-500");
-        await new Promise((resolve) => setTimeout(resolve, 3000));
+        await new Promise((resolve) => setTimeout(resolve, 1000));
         setButtonColor("bg-primary");
         break;
       case "generateAnswers":
         console.log("Generating answers...");
         if (handleGenerateAnswers) await handleGenerateAnswers();
         setButtonColor("bg-yellow-500");
-        await new Promise((resolve) => setTimeout(resolve, 3000));
+        await new Promise((resolve) => setTimeout(resolve, 1000));
         setButtonColor("bg-primary");
         break;
       case "generateReadiness":
         console.log("Generating readiness...");
         if (handleGenerateReadiness) await handleGenerateReadiness();
         setButtonColor("bg-yellow-500");
-        await new Promise((resolve) => setTimeout(resolve, 3000));
+        await new Promise((resolve) => setTimeout(resolve, 1000));
         setButtonColor("bg-primary");
         break;
       case "addQuota":
         if (handleAddQuota) await handleAddQuota();
         console.log("Adding quota...");
         setButtonColor("bg-yellow-500");
-        await new Promise((resolve) => setTimeout(resolve, 3000));
+        await new Promise((resolve) => setTimeout(resolve, 1000));
         setButtonColor("bg-primary");
         break;
       default:

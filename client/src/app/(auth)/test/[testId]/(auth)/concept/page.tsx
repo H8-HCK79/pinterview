@@ -259,7 +259,7 @@ export default function ConceptTestPage() {
             <div className="relative min-h-64 mb-4">
               <div className="absolute left-0 top-5 max-w-[70%]">
                 <div className="bg-gray-200 px-4 py-2 rounded-lg text-gray-800">
-                  <p className="font-medium">Interviewer Question:</p>
+                  <p className="font-medium">{`Interviewer Question ${currentQuestionIndex + 1}`}</p>
                   <p>{conceptQuestions[currentQuestionIndex]?.question}</p>
                 </div>
               </div>
