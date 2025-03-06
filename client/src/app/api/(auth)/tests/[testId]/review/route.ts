@@ -40,9 +40,11 @@ export async function POST(req: Request, { params }: Params) {
       );
     }
     const { reviews, score, summary } = responseOpenAI;
+      console.log(reviews, score, summary, "GINIBRO");
 
     for (let i = 0; i < reviews.length; i++) {
       const { _id, correctness, feedback } = reviews[i];
+      console.log(_id, correctness, feedback, "SINIBRO");
 
       await QuestionModel.where("_id", _id).update({
         correctness: Number(correctness),
@@ -50,7 +52,11 @@ export async function POST(req: Request, { params }: Params) {
       });
     }
 
-    await TestModel.where("_id", testId).update({ score: Number(score), summary, isReviewed: true });
+    await TestModel.where("_id", testId).update({
+      score: Number(score),
+      summary,
+      isReviewed: true,
+    });
 
     return Response.json({ response: responseOpenAI }, { status: 200 });
   } catch (err) {

@@ -1,9 +1,13 @@
 "use client";
 
+import DebugButton from "@/components/DebugButton";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function PurchasePage() {
+  const router = useRouter()
+
   const [isOrdered, setIsOrdered] = useState(false);
   const [selectedOption, setSelectedOption] = useState<number>(0);
   const [redirectUrl, setRedirectUrl] = useState<string>(
@@ -74,6 +78,23 @@ export default function PurchasePage() {
       maximumFractionDigits: 0,
     }).format(price);
   };
+
+  const handleAddQuota = async () => {
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/profile/quota`,
+        {
+          method: "POST",
+        }
+      );
+
+      if (!res.ok) throw res
+      router.push("/callback")
+    } catch (error) {
+      console.log(error, "<<< err handleAddQuota");
+    }
+    
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center p-6 bg-gradient-to-br from-blue-500 to-blue-700 relative overflow-hidden">
@@ -156,7 +177,12 @@ export default function PurchasePage() {
           <div className="h-full flex flex-col">
             <div className="flex justify-between p-4 bg-white border-b border-gray-200">
               <h2 className="text-lg font-semibold text-gray-800">Payment</h2>
-              <Link href="/purchase/history" className="text-lg font-semibold text-blue-600 hover:underline">History</Link>
+              <Link
+                href="/purchase/history"
+                className="text-lg font-semibold text-blue-600 hover:underline"
+              >
+                History
+              </Link>
             </div>
 
             <div className="flex-1 flex items-center justify-center p-4">
@@ -185,7 +211,7 @@ export default function PurchasePage() {
                         </p>
                       </div>
                       <p className="mt-4">
-                        Click "Proceed to Payment" to continue
+                        Click &quot;Proceed to Payment&quot; to continue
                       </p>
                     </div>
                   ) : (
@@ -204,6 +230,7 @@ export default function PurchasePage() {
           </div>
         </div>
       </div>
+      <DebugButton handleAddQuota={handleAddQuota} />
     </div>
   );
 }

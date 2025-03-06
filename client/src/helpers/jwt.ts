@@ -1,4 +1,3 @@
-import { LoginInput } from '@/interfaces/IUser'
 import jwt from 'jsonwebtoken'
 import { ObjectId } from 'mongodb'
 

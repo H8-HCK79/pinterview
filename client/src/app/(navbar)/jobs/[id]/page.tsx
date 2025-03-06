@@ -26,12 +26,12 @@ import Link from "next/link";
 import {
   ArrowLeft,
   Briefcase,
-  Circle,
   ClipboardList,
   GraduationCap,
   ListTodoIcon,
   Trash,
 } from "lucide-react";
+import DebugButton from "@/components/DebugButton";
 
 const statusOptions = [
   {
@@ -135,27 +135,42 @@ export default function JobDetailsPage() {
     (option) => option.value === selectedStatus
   );
 
-  useEffect(() => {
-    async function fetchJob() {
-      if (!id) return;
-      try {
-        await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/jobs/${id}/readiness`);
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_BASE_URL}/jobs/${id}`
-        );
-        const data: IAggregatedJob = (await res.json()).data;
-        setJob(data);
+  async function fetchJob() {
+    if (!id) return;
+    try {
+      await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/jobs/${id}/readiness`);
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/jobs/${id}`);
+      const data: IAggregatedJob = (await res.json()).data;
+      setJob(data);
 
-        // Update selectedStatus with job.status from backend
-        setSelectedStatus(data.status);
-        setProjects(data.projects);
-      } catch (error) {
-        console.error("Error fetching job data:", error);
-      }
+      // Update selectedStatus with job.status from backend
+      setSelectedStatus(data.status);
+      setProjects(data.projects);
+    } catch (error) {
+      console.error("Error fetching job data:", error);
     }
+  }
+
+  useEffect(() => {
     fetchJob();
   }, [id]);
 
+  // handleGenerateReadiness;
+  const handleGenerateReadiness = async () => {
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/jobs/${id}/readiness`, {
+          method: "POST"
+        }
+      );
+      if (!res.ok) throw new Error("Failed to fetch");
+
+      fetchJob();
+    } catch (error) {
+      console.error("Error populating answers:", error);
+    }
+  };
+  
   if (!job) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-50">
@@ -395,6 +410,7 @@ export default function JobDetailsPage() {
           </Card>
         </div>
       </div>
+      <DebugButton handleGenerateReadiness={handleGenerateReadiness} />
     </div>
   );
 }

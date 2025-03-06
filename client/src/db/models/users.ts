@@ -46,7 +46,7 @@ export default class UserModel extends Mongoloquent {
         email,
         password: hashedPassword,
         birthDate,
-        quota: 3,
+        quota: 1,
         createdAt: new Date(),
         updatedAt: new Date(),
       });
@@ -95,9 +95,9 @@ export default class UserModel extends Mongoloquent {
       const payload = ticket.getPayload();
       if (!payload) throw new Error("Invalid Google token");
 
-      const { sub, name, email, picture } = payload;
+      const { name, email } = payload;
 
-      let user = (await UserModel.where("email", email).first()) as {
+      const user = (await UserModel.where("email", email).first()) as {
         data: IUser;
       };
 
@@ -107,7 +107,7 @@ export default class UserModel extends Mongoloquent {
       }
 
       // Jika user belum ada, buat user baru dengan akun Google
-      let newUser = (await UserModel.insert({
+      const newUser = (await UserModel.insert({
         fullName: name,
         email,
         password: "googlelogin", // Kosong karena login dengan Google

@@ -47,7 +47,7 @@ export default function AddJobs() {
   const [company, setCompany] = useState("");
   const [rawDescription, setRawDescription] = useState("");
   const [error, setError] = useState<string>("");
-  const { user, fetchUser } = useUser(); // Get user context
+  const { fetchUser } = useUser(); // Get user context
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

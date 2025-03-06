@@ -1,5 +1,6 @@
 "use client";
 import { Cover } from "@/components/ui/cover";
+import { CredentialResponse } from "@/global";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -13,7 +14,7 @@ export default function Login() {
   useEffect(() => {
     if (typeof window !== undefined && window.google) {
       window.google.accounts.id.initialize({
-        client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
+        client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID as string,
         callback: handleCredentialResponse,
       });
       window.google.accounts.id.renderButton(
@@ -27,8 +28,7 @@ export default function Login() {
   }, []);
 
   async function handleCredentialResponse(
-    response: any,
-    e: React.FormEvent<HTMLFormElement>
+    response: CredentialResponse,
   ) {
     console.log(response.credential, "INI CREDENTIAL");
 
@@ -132,7 +132,7 @@ export default function Login() {
             className="flex items-center justify-center mt-5 rounded-full"
           ></div>
           <p className="text-center mt-4">
-            Don't have an account? <br />
+            Don&lsquo;t have an account? <br />
             <Link href="/register" className="text-blue-300 hover:underline">
               Register here
             </Link>

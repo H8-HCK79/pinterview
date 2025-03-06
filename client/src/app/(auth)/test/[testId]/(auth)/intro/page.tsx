@@ -1,42 +1,54 @@
 "use client";
 
 import { useSecondsContext } from "@/context/SecondsContext";
-import { redirect, useParams, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function IntroPage() {
   const { testId } = useParams<{ testId: string }>();
   console.log(testId, "ID");
   const router = useRouter();
   const [agreed, setAgreed] = useState(false);
+  const [loading, setLoading] = useState(false); // Loading state
 
   const { setSeconds, setIsPlaying } = useSecondsContext();
 
-  const savedPlaying = localStorage.getItem("is_playing");
-  if (savedPlaying === "true") {
-    redirect(`/test/${testId}/concept`)
-  }
+  useEffect(() => {
+    const savedPlaying = localStorage.getItem("is_playing");
+    const savedSeconds = localStorage.getItem("remaining_seconds");
+
+    if (savedPlaying === "true" && savedSeconds) {
+      setSeconds(Number(savedSeconds));
+      setIsPlaying(true);
+      router.push(`/test/${testId}/concept`);
+    }
+  }, []);
 
   const handleGenerateQuestions = async () => {
+    setLoading(true); // Set loading state
     try {
-      // const res = await fetch(
-      //   `${process.env.NEXT_PUBLIC_BASE_URL}/tests/${testId}/questions`,
-      //   {
-      //     method: "POST",
-      //   }
-      // );
-      // if (!res.ok) {
-      //   throw res;
-      // }
-      // console.log(res, "<<< ok handleGenerateQuestions");
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/tests/${testId}/questions`,
+        {
+          method: "POST",
+        }
+      );
+      if (!res.ok) {
+        throw res;
+      }
+      console.log(res, "<<< ok handleGenerateQuestions");
 
-      // put the context here and start the timer
-      setSeconds(20); // Reset the timer
-      setIsPlaying(true); // Start the timer
+      // Start the timer
+      setSeconds(1800);
+      setIsPlaying(true);
+      localStorage.setItem("remaining_seconds", "1800");
+      localStorage.setItem("is_playing", "true");
 
       router.push(`/test/${testId}/concept`);
     } catch (err: unknown) {
       console.log(err, "<<< err handleGenerateQuestions");
+    } finally {
+      setLoading(false); // Reset loading state
     }
   };
 
@@ -57,6 +69,7 @@ export default function IntroPage() {
           {[
             "Ensure a stable internet connection.",
             "No switching tabs during the test.",
+            "Or else you will be punished from the test.",
             "Answer honestly without external help.",
             "Time is limited, manage it wisely.",
           ].map((rule, index) => (
@@ -90,15 +103,40 @@ export default function IntroPage() {
         </div>
 
         <button
-          className={`w-full mt-4 py-2 px-4 rounded-lg text-white ${
+          className={`w-full mt-4 py-2 px-4 rounded-lg text-white flex justify-center items-center ${
             agreed
               ? "bg-blue-600 hover:bg-blue-700"
               : "bg-gray-400 cursor-not-allowed"
-          }`}
-          disabled={!agreed}
+          } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+          disabled={!agreed || loading}
           onClick={handleGenerateQuestions}
         >
-          Continue to Test
+          {loading ? (
+            <>
+              <svg
+                className="animate-spin h-5 w-5 mr-2 text-white"
+                viewBox="0 0 24 24"
+                fill="none"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                />
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 01-8 8z"
+                />
+              </svg>
+              Loading...
+            </>
+          ) : (
+            "Continue to Test"
+          )}
         </button>
       </div>
     </div>

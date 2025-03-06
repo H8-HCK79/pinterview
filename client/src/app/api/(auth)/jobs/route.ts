@@ -41,6 +41,15 @@ export async function GET(request: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const userId = req.headers.get("x-user-id") as string;
+
+    const user: IUser = await UserModel.findById(userId.toString());
+    if (user.quota <= 0) {
+      return Response.json(
+        { error: "Insufficient amount of quota" },
+        { status: 400 }
+      );
+    }
+
     const { company, position, rawDescription } = await req.json();
     const responseOpenAI: IJobResponseAI | { error: string } =
       await generateJobAI(company, position, rawDescription);
@@ -65,7 +74,7 @@ export async function POST(req: NextRequest) {
       await TestModel.generate({ category: skill, position }, job._id);
     });
 
-    const user: IUser = await UserModel.findById(userId.toString());
+    
     await UserModel.where("_id", userId).update({
       quota: user.quota - 1,
     });

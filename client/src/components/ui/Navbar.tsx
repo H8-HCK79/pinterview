@@ -1,13 +1,12 @@
 "use client";
 
 import { useUser } from "@/context/UserContext";
-import { useState } from "react";
 import { LogOut, LogIn, User, CreditCard } from "lucide-react";
 import Link from "next/link";
 import { logoutUser } from "@/app/(sign)/actions";
 
 export default function Navbar() {
-  const { user, fetchUser } = useUser(); // Get fetchUser from context
+  const { user } = useUser(); // Get fetchUser from context
 
   return (
     <nav className="bg-white shadow-md w-full z-20 sticky top-0 h-[10%] left-0">
@@ -15,9 +14,14 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16">
           {/* Left Section - Logo & Navigation */}
           <div className="flex items-center gap-6">
-            <Link href="/">
-              <h1 className="text-2xl font-bold tracking-wide text-blue-500">
-                PINTERVIEW
+            <Link href="/" className="flex">
+              <img
+                src="/pinterview_logo.png"
+                alt="Pinterview Logo"
+                className=" object-contain w-10"
+              />
+              <h1 className="text-2xl font-bold tracking-wide text-blue-400 -ml-0.5">
+                INTERVIEW
               </h1>
             </Link>
             <div className="flex gap-4 text-gray-600 font-medium">

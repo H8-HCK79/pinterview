@@ -1,5 +1,4 @@
 import { IJobResponseAI } from "@/interfaces/IJob";
-import { IInterviewQuestion } from "@/interfaces/IQuestion";
 import OpenAI from "openai";
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });

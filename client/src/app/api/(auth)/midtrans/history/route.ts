@@ -1,4 +1,3 @@
-import JobModel from "@/db/models/jobs";
 import TransactionModel from "@/db/models/transaction";
 import { NextRequest } from "next/server";
 
@@ -10,7 +9,8 @@ export async function GET(request: NextRequest) {
 
     const transactions = await TransactionModel.fetchAllByUserId(userId);
     return Response.json({ data: transactions }, { status: 200 });
-  } catch (error: unknown) {
+  } catch (err: unknown) {
+    console.log(err, "<<< history");
     return Response.json({ message: "internal server error" }, { status: 500 });
   }
 }
